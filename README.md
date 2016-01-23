@@ -1,6 +1,7 @@
 # JEFE - GENERAL GAME PLAYING PLAYER
 
 Jefe is a general game playing player used in the course T-732-GAPL, General Game Playing at Reykjavik University.
+
 Jefe is based on general game playing base package https://github.com/ggp-org/ggp-base.
 
 #### Requirements
