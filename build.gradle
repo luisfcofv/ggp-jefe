@@ -3,34 +3,22 @@ apply plugin: 'checkstyle'
 apply plugin: 'idea'
 apply plugin: 'scala'
 
-/*
- * For now, instead of using an online library repository (e.g. Maven), we keep
- * local versions of .jars to reduce the number of things that can go wrong
- * during setup.
- */
-dependencies {
-    compile 'org.scala-lang:scala-library:2.11.7'
-    compile files(
-        'lib/Guava/guava-14.0.1.jar',
-        'lib/Jython/jython.jar',
-        'lib/Clojure/clojure.jar',
-        'lib/Batik/batik-1.7.jar',
-        'lib/FlyingSaucer/core-renderer.jar',
-        'lib/javassist/javassist.jar',
-        'lib/reflections/reflections-0.9.9-RC1.jar',
-        'lib/Htmlparser/htmlparser-1.4.jar',
-    )
-    testCompile files(
-        'lib/JUnit/junit-4.11.jar',
-        'lib/JUnit/hamcrest-core-1.3.jar',
-    )
-}
-
-//Checkstyle does need a repository to be defined to work. This is only
-//required to check that the code works from the command line, not to run
-//applications from the command line.
 repositories {
     mavenCentral()
+}
+
+dependencies {
+    compile 'org.scala-lang:scala-library:2.11.7'
+    compile 'com.google.guava:guava:14.0.1'
+    compile 'org.xhtmlrenderer:flying-saucer-core:9.0.8'
+    compile 'nu.validator.htmlparser:htmlparser:1.4'
+    compile 'junit:junit:4.12'
+    compile 'org.reflections:reflections:0.9.10'
+    compile 'org.javassist:javassist:3.20.0-GA'
+
+    compile files(
+        'lib/Batik/batik-1.7.jar',
+    )
 }
 
 /*
@@ -43,31 +31,6 @@ repositories {
 test {
     include 'org/ggp/base/test/AllTests.class'
 }
-
-
-//Various applications that can be run from Gradle:
-
-//Note: The clojureConsole task should be run with the -q flag to quiet Gradle's normal output.
-task clojureConsole(type: JavaExec) {
-    main = 'org.ggp.base.apps.consoles.ClojureConsole'
-    classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-}
-
-task pythonConsole(type: JavaExec) {
-    doFirst {
-        println classpath.getAsPath()
-    }
-    main = 'org.ggp.base.apps.consoles.PythonConsole'
-    classpath = sourceSets.main.runtimeClasspath
-}
-
-/* Not working, no main method found (ant doesn't work in Ant either):
-task clojureGamer(type: JavaExec) {
-    main='org.ggp.base.player.gamer.clojure.ClojureGamer'
-    classpath = sourceSets.main.runtimeClasspath
-}
-*/
 
 //You can tweak these JVM arguments for players run through Gradle.
 def playerJvmArgs = [

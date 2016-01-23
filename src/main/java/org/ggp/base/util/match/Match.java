@@ -1,24 +1,15 @@
 package org.ggp.base.util.match;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-
+import external.JSON.JSONArray;
+import external.JSON.JSONException;
+import external.JSON.JSONObject;
 import org.ggp.base.util.crypto.BaseCryptography.EncodedKeyPair;
 import org.ggp.base.util.crypto.SignableJSON;
 import org.ggp.base.util.game.Game;
 import org.ggp.base.util.game.RemoteGameRepository;
 import org.ggp.base.util.gdl.factory.GdlFactory;
 import org.ggp.base.util.gdl.factory.exceptions.GdlFormatException;
-import org.ggp.base.util.gdl.grammar.Gdl;
-import org.ggp.base.util.gdl.grammar.GdlConstant;
-import org.ggp.base.util.gdl.grammar.GdlFunction;
-import org.ggp.base.util.gdl.grammar.GdlRelation;
-import org.ggp.base.util.gdl.grammar.GdlSentence;
-import org.ggp.base.util.gdl.grammar.GdlTerm;
+import org.ggp.base.util.gdl.grammar.*;
 import org.ggp.base.util.gdl.scrambler.GdlScrambler;
 import org.ggp.base.util.gdl.scrambler.MappingGdlScrambler;
 import org.ggp.base.util.gdl.scrambler.NoOpGdlScrambler;
@@ -28,9 +19,7 @@ import org.ggp.base.util.symbol.factory.SymbolFactory;
 import org.ggp.base.util.symbol.factory.exceptions.SymbolFormatException;
 import org.ggp.base.util.symbol.grammar.SymbolList;
 
-import external.JSON.JSONArray;
-import external.JSON.JSONException;
-import external.JSON.JSONObject;
+import java.util.*;
 
 /**
  * Match encapsulates all of the information relating to a single match.
@@ -131,9 +120,9 @@ public final class Match
             this.isAborted = false;
         }
         if (theMatchObject.has("tournamentNameFromHost")) {
-        	this.tournamentNameFromHost = theMatchObject.getString("tournamentNameFromHost");
+            this.tournamentNameFromHost = theMatchObject.getString("tournamentNameFromHost");
         } else {
-        	this.tournamentNameFromHost = null;
+            this.tournamentNameFromHost = null;
         }
 
         this.numRoles = Role.computeRoles(this.theGame.getRules()).size();
@@ -305,7 +294,7 @@ public final class Match
                 theJSON.put("isPlayerHuman", isPlayerHuman);
             }
             if (tournamentNameFromHost != null) {
-            	theJSON.put("tournamentNameFromHost", tournamentNameFromHost);
+                theJSON.put("tournamentNameFromHost", tournamentNameFromHost);
             }
             theJSON.put("scrambled", theGdlScrambler != null ? theGdlScrambler.scrambles() : false);
         } catch (JSONException e) {
@@ -433,7 +422,7 @@ public final class Match
     }
 
     public String getTournamentNameFromHost() {
-    	return tournamentNameFromHost;
+        return tournamentNameFromHost;
     }
 
     public boolean isCompleted() {

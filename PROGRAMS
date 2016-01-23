@@ -35,18 +35,6 @@ Command-line server runner
  - Description: Runs a match with the given game and player(s). Stores the
 results in a directory with the given name.
 
-Clojure console
- - Main class: org.ggp.base.apps.consoles.ClojureConsole
- - How to run: ./gradlew -q clojureConsole
- - Description: A console for interactively running Clojure code. Clojure is a
-   dialect of Lisp that runs in the JVM.
-
-Python console
- - Main class: org.ggp.base.apps.consoles.PythonConsole
- - How to run: ./gradlew pythonConsole
- - Description: A console for interactively running Python code via Jython.
-   Jython is a Python implementation that runs in the JVM.
-
 Simple game simulation
  - Main class: org.ggp.base.apps.utilities.SimpleGameSim
  - How to run: ./gradlew simpleGameSim
