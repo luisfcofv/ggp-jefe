@@ -10,14 +10,15 @@ The project must be built with Java 7 or later.
 
 Sample commands (use gradlew.bat instead if on Windows):
 
-Confirm Gradle version:        ./gradlew -v
-Show list of available tasks:  ./gradlew tasks
-Compile code and run tests:    ./gradlew build
-Compile without running tests: ./gradlew assemble
-Run the Kiosk app:             ./gradlew kiosk
-Run the Player app:            ./gradlew player
-Run the Server app:            ./gradlew server
-Create IntelliJ IDEA files:    ./gradlew idea
+* `./gradlew -v` - Confirm Gradle version.
+* `./gradlew tasks` - Show list of available tasks.
+* `./gradlew build` - Compile code and run tests.
+* `./gradlew assemble` - Compile without running tests.
+* `./gradlew kiosk` - Run the Kiosk app.
+* `./gradlew player` - Run the Player app.
+* `./gradlew server` - Run the Server app.
+* `./gradlew idea` - Create IntelliJ IDEA files.
+
 
 See the PROGRAMS file for additional programs that can be run, including non-GUI player and server applications.
 
