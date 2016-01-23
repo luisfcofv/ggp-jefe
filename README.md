@@ -5,7 +5,7 @@ Jefe is based on general game playing base package https://github.com/ggp-org/gg
 
 #### Requirements
 
-The project must be built with Java 7 or later.
+The project must be built with Java 8 or later.
 
 Sample commands (use gradlew.bat instead if on Windows):
 
