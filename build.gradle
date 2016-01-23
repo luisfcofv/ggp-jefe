@@ -1,20 +1,37 @@
 apply plugin: 'java'
+apply plugin: 'kotlin'
 apply plugin: 'checkstyle'
 apply plugin: 'idea'
-apply plugin: 'scala'
+
+buildscript {
+    ext.kotlin_version = '1.0.0-beta-4589'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: "kotlin"
+
+sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile 'org.scala-lang:scala-library:2.11.7'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.google.guava:guava:14.0.1'
     compile 'org.xhtmlrenderer:flying-saucer-core:9.0.8'
     compile 'nu.validator.htmlparser:htmlparser:1.4'
-    compile 'junit:junit:4.12'
     compile 'org.reflections:reflections:0.9.10'
     compile 'org.javassist:javassist:3.20.0-GA'
+
+    testCompile 'junit:junit:4.12'
 
     compile files(
         'lib/Batik/batik-1.7.jar',

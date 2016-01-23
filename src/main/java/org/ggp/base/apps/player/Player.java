@@ -1,25 +1,6 @@
 package org.ggp.base.apps.player;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.border.TitledBorder;
-
+import com.google.common.collect.Lists;
 import org.ggp.base.apps.player.config.ConfigPanel;
 import org.ggp.base.apps.player.detail.DetailPanel;
 import org.ggp.base.apps.player.match.MatchPanel;
@@ -29,7 +10,13 @@ import org.ggp.base.player.gamer.Gamer;
 import org.ggp.base.util.reflection.ProjectSearcher;
 import org.ggp.base.util.ui.NativeUI;
 
-import com.google.common.collect.Lists;
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @SuppressWarnings("serial")
@@ -52,15 +39,7 @@ public final class Player extends JPanel
         NativeUI.setNativeUI();
 
         final Player playerPanel = new Player();
-        javax.swing.SwingUtilities.invokeLater(new Runnable()
-        {
-
-            @Override
-            public void run()
-            {
-                createAndShowGUI(playerPanel);
-            }
-        });
+        javax.swing.SwingUtilities.invokeLater(() -> createAndShowGUI(playerPanel));
     }
 
     private final JButton createButton;
@@ -79,21 +58,16 @@ public final class Player extends JPanel
         super(new GridBagLayout());
 
         portTextField = new JTextField(defaultPort.toString());
-        typeComboBox = new JComboBox<String>();
+        typeComboBox = new JComboBox<>();
         createButton = new JButton(createButtonMethod());
         playersTabbedPane = new JTabbedPane();
 
         portTextField.setColumns(15);
 
         // Sort the list of gamers before displaying it to the user
-        java.util.Collections.sort(gamers, new Comparator<Class<? extends Gamer>>() {
-            @Override
-            public int compare(Class<? extends Gamer> left, Class<? extends Gamer> right) {
-                return left.getSimpleName().compareTo(right.getSimpleName());
-            }
-        });
+        java.util.Collections.sort(gamers, (left, right) -> left.getSimpleName().compareTo(right.getSimpleName()));
 
-        List<Class<? extends Gamer>> gamersCopy = new ArrayList<Class<? extends Gamer>>(gamers);
+        List<Class<? extends Gamer>> gamersCopy = new ArrayList<>(gamers);
         for(Class<? extends Gamer> gamer : gamersCopy)
         {
             Gamer g;
@@ -139,9 +113,9 @@ public final class Player extends JPanel
 
                     MatchPanel matchPanel = new MatchPanel();
                     NetworkPanel networkPanel = new NetworkPanel();
-                    DetailPanel detailPanel = null;
-                    ConfigPanel configPanel = null;
-                    Gamer gamer = null;
+                    DetailPanel detailPanel;
+                    ConfigPanel configPanel;
+                    Gamer gamer;
 
                     Class<?> gamerClass = gamers.get(typeComboBox.getSelectedIndex());
                     try {
