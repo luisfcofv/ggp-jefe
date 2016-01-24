@@ -20,10 +20,8 @@ import java.util.List;
 
 
 @SuppressWarnings("serial")
-public final class Player extends JPanel
-{
-    private static void createAndShowGUI(Player playerPanel)
-    {
+public final class Player extends JPanel {
+    private static void createAndShowGUI(Player playerPanel) {
         JFrame frame = new JFrame("Game Player");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -34,11 +32,10 @@ public final class Player extends JPanel
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws IOException {
         NativeUI.setNativeUI();
 
-        final Player playerPanel = new Player();
+        Player playerPanel = new Player();
         javax.swing.SwingUtilities.invokeLater(() -> createAndShowGUI(playerPanel));
     }
 
@@ -53,8 +50,7 @@ public final class Player extends JPanel
 
     private List<Class<? extends Gamer>> gamers = Lists.newArrayList(ProjectSearcher.GAMERS.getConcreteClasses());
 
-    public Player()
-    {
+    public Player() {
         super(new GridBagLayout());
 
         portTextField = new JTextField(defaultPort.toString());
@@ -68,13 +64,12 @@ public final class Player extends JPanel
         java.util.Collections.sort(gamers, (left, right) -> left.getSimpleName().compareTo(right.getSimpleName()));
 
         List<Class<? extends Gamer>> gamersCopy = new ArrayList<>(gamers);
-        for(Class<? extends Gamer> gamer : gamersCopy)
-        {
+        for (Class<? extends Gamer> gamer : gamersCopy) {
             Gamer g;
             try {
                 g = gamer.newInstance();
                 typeComboBox.addItem(g.getName());
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 gamers.remove(gamer);
             }
         }
@@ -98,16 +93,12 @@ public final class Player extends JPanel
         this.add(playersPanel, new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 5, 5));
     }
 
-    private AbstractAction createButtonMethod()
-    {
-        return new AbstractAction("Create")
-        {
+    private AbstractAction createButtonMethod() {
+        return new AbstractAction("Create") {
 
             @Override
-            public void actionPerformed(ActionEvent evt)
-            {
-                try
-                {
+            public void actionPerformed(ActionEvent evt) {
+                try {
                     int port = Integer.valueOf(portTextField.getText());
                     String type = (String) typeComboBox.getSelectedItem();
 
@@ -120,7 +111,9 @@ public final class Player extends JPanel
                     Class<?> gamerClass = gamers.get(typeComboBox.getSelectedIndex());
                     try {
                         gamer = (Gamer) gamerClass.newInstance();
-                    } catch(Exception ex) { throw new RuntimeException(ex); }
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
                     detailPanel = gamer.getDetailPanel();
                     configPanel = gamer.getConfigPanel();
 
@@ -137,13 +130,11 @@ public final class Player extends JPanel
                     tab.addTab("Configuration", configPanel);
                     tab.addTab("Detail", detailPanel);
                     playersTabbedPane.addTab(type + " (" + player.getGamerPort() + ")", tab);
-                    playersTabbedPane.setSelectedIndex(playersTabbedPane.getTabCount()-1);
+                    playersTabbedPane.setSelectedIndex(playersTabbedPane.getTabCount() - 1);
 
                     defaultPort++;
                     portTextField.setText(defaultPort.toString());
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
