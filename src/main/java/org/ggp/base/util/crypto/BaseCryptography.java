@@ -1,22 +1,14 @@
 package org.ggp.base.util.crypto;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Signature;
-import java.security.SignatureException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
-
 import external.Base64Coder.Base64Coder;
 import external.JSON.JSONException;
 import external.JSON.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 
 public class BaseCryptography {
     public static void main(String args[]) {
@@ -47,10 +39,8 @@ public class BaseCryptography {
             sig.initSign(theSK);
             sig.update(theData.getBytes("UTF-8"));
             return encodeSignature(sig.sign());
-        } catch (SignatureException e) {
-        } catch (UnsupportedEncodingException e) {
-        } catch (InvalidKeyException e) {
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Exception e) {
+            // Do nothing
         }
         return null;
     }

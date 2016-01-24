@@ -1,17 +1,8 @@
 package org.ggp.base.player.request.factory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.ggp.base.player.gamer.Gamer;
 import org.ggp.base.player.request.factory.exceptions.RequestFormatException;
-import org.ggp.base.player.request.grammar.AbortRequest;
-import org.ggp.base.player.request.grammar.InfoRequest;
-import org.ggp.base.player.request.grammar.PlayRequest;
-import org.ggp.base.player.request.grammar.PreviewRequest;
-import org.ggp.base.player.request.grammar.Request;
-import org.ggp.base.player.request.grammar.StartRequest;
-import org.ggp.base.player.request.grammar.StopRequest;
+import org.ggp.base.player.request.grammar.*;
 import org.ggp.base.util.game.Game;
 import org.ggp.base.util.gdl.factory.GdlFactory;
 import org.ggp.base.util.gdl.factory.exceptions.GdlFormatException;
@@ -21,6 +12,9 @@ import org.ggp.base.util.symbol.factory.SymbolFactory;
 import org.ggp.base.util.symbol.grammar.Symbol;
 import org.ggp.base.util.symbol.grammar.SymbolAtom;
 import org.ggp.base.util.symbol.grammar.SymbolList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class RequestFactory
 {
@@ -32,33 +26,21 @@ public final class RequestFactory
             SymbolAtom head = (SymbolAtom) list.get(0);
 
             String type = head.getValue().toLowerCase();
-            if (type.equals("play"))
-            {
-                return createPlay(gamer, list);
-            }
-            else if (type.equals("start"))
-            {
-                return createStart(gamer, list);
-            }
-            else if (type.equals("stop"))
-            {
-                return createStop(gamer, list);
-            }
-            else if (type.equals("abort"))
-            {
-                return createAbort(gamer, list);
-            }
-            else if (type.equals("info"))
-            {
-                return createInfo(gamer, list);
-            }
-            else if (type.equals("preview"))
-            {
-                return createPreview(gamer, list);
-            }
-            else
-            {
-                throw new IllegalArgumentException("Unrecognized request type!");
+            switch (type) {
+                case "play":
+                    return createPlay(gamer, list);
+                case "start":
+                    return createStart(gamer, list);
+                case "stop":
+                    return createStop(gamer, list);
+                case "abort":
+                    return createAbort(gamer, list);
+                case "info":
+                    return createInfo(gamer, list);
+                case "preview":
+                    return createPreview(gamer, list);
+                default:
+                    throw new IllegalArgumentException("Unrecognized request type!");
             }
         }
         catch (Exception e)
@@ -173,7 +155,7 @@ public final class RequestFactory
         }
         else
         {
-            List<GdlTerm> moves = new ArrayList<GdlTerm>();
+            List<GdlTerm> moves = new ArrayList<>();
             SymbolList list = (SymbolList) symbol;
 
             for (int i = 0; i < list.size(); i++)

@@ -13,8 +13,7 @@ import java.util.Map;
  *
  * @author schreib
  */
-public final class HttpRequest
-{
+public final class HttpRequest {
     public static String issueRequest(String targetHost, int targetPort, String forPlayerName, String requestContent, int timeoutClock, Map<String, String> extraHeaders) throws IOException {
         Socket socket = new Socket();
         InetAddress theHost = InetAddress.getByName(targetHost);

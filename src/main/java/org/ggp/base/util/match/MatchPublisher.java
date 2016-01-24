@@ -35,37 +35,15 @@ public class MatchPublisher {
                 return new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
             } else {
                 String errorDescription = "?";
-                try { errorDescription = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine(); } catch (Exception q) {};
+                try {
+                    errorDescription = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
+                } catch (Exception q) {
+                    // Do nothing
+                }
                 throw new IOException(connection.getResponseCode() + ": " + errorDescription);
             }
         } catch (MalformedURLException e) {
             throw new IOException(e);
-        } catch (IOException e) {
-            throw e;
         }
-    }
-
-    static class MatchPublisherThread extends Thread {
-        private Match theMatch;
-        private String spectatorURL;
-
-        public MatchPublisherThread(String spectatorURL, Match theMatch) {
-            this.theMatch = theMatch;
-            this.spectatorURL = spectatorURL;
-        }
-
-        @Override
-        public void run() {
-            try {
-                MatchPublisher.publishToSpectatorServer(spectatorURL, theMatch);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static void publishToSpectatorServerAsync(String spectatorURL, Match theMatch) throws IOException {
-        MatchPublisherThread theThread = new MatchPublisherThread(spectatorURL, theMatch);
-        theThread.start();
     }
 }

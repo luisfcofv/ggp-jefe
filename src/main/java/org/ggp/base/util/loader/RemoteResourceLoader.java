@@ -1,5 +1,9 @@
 package org.ggp.base.util.loader;
 
+import external.JSON.JSONArray;
+import external.JSON.JSONException;
+import external.JSON.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,10 +11,6 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Map;
-
-import external.JSON.JSONArray;
-import external.JSON.JSONException;
-import external.JSON.JSONObject;
 
 /**
  * RemoteResourceLoader loads remotely-stored resources. It can load resources
@@ -62,7 +62,7 @@ public class RemoteResourceLoader {
                     do {
                         String nextLine = br.readLine();
                         if (nextLine == null) break;
-                        theRawData.append(nextLine + "\n");
+                        theRawData.append(nextLine).append("\n");
                     } while (true);
                 }
                 return theRawData.toString();

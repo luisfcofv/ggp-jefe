@@ -1,18 +1,12 @@
 package org.ggp.base.util.logging;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import org.ggp.base.util.match.Match;
+
+import java.io.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-
-import org.ggp.base.util.match.Match;
 
 
 /**
@@ -104,7 +98,7 @@ public class GamerLogger {
     private static boolean writeLogsToFile = false;
 
     private static final Random theRandom = new Random();
-    private static final Set<String> filesToSkip = new HashSet<String>();
+    private static final Set<String> filesToSkip = new HashSet<>();
     private static final long maximumLogfileSize = 25 * 1024 * 1024;
 
     private static void logEntry(PrintStream ordinaryOutput, String toFile, String message, int logLevel) {
@@ -167,7 +161,7 @@ public class GamerLogger {
     }
 
     private static String myDirectory;
-    private static HashSet<String> filesToDisplay = new HashSet<String>();
+    private static HashSet<String> filesToDisplay = new HashSet<>();
     private static int minLevelToDisplay = Integer.MAX_VALUE;
     private static boolean suppressLoggerOutput;
     private static String spilloverLogfile;

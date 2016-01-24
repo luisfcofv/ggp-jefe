@@ -20,6 +20,7 @@ import org.ggp.base.util.symbol.factory.exceptions.SymbolFormatException;
 import org.ggp.base.util.symbol.grammar.SymbolList;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Match encapsulates all of the information relating to a single match.
@@ -81,12 +82,12 @@ public final class Match
 
         this.numRoles = Role.computeRoles(theGame.getRules()).size();
 
-        this.moveHistory = new ArrayList<List<GdlTerm>>();
-        this.stateHistory = new ArrayList<Set<GdlSentence>>();
-        this.stateTimeHistory = new ArrayList<Date>();
-        this.errorHistory = new ArrayList<List<String>>();
+        this.moveHistory = new ArrayList<>();
+        this.stateHistory = new ArrayList<>();
+        this.stateTimeHistory = new ArrayList<>();
+        this.errorHistory = new ArrayList<>();
 
-        this.goalValues = new ArrayList<Integer>();
+        this.goalValues = new ArrayList<>();
     }
 
     public Match(String theJSON, Game theGame, String authToken) throws JSONException, SymbolFormatException, GdlFormatException {
@@ -114,11 +115,8 @@ public final class Match
         this.randomToken = theMatchObject.getString("randomToken");
         this.spectatorAuthToken = authToken;
         this.isCompleted = theMatchObject.getBoolean("isCompleted");
-        if (theMatchObject.has("isAborted")) {
-            this.isAborted = theMatchObject.getBoolean("isAborted");
-        } else {
-            this.isAborted = false;
-        }
+        this.isAborted = theMatchObject.has("isAborted") && theMatchObject.getBoolean("isAborted");
+
         if (theMatchObject.has("tournamentNameFromHost")) {
             this.tournamentNameFromHost = theMatchObject.getString("tournamentNameFromHost");
         } else {
@@ -127,14 +125,14 @@ public final class Match
 
         this.numRoles = Role.computeRoles(this.theGame.getRules()).size();
 
-        this.moveHistory = new ArrayList<List<GdlTerm>>();
-        this.stateHistory = new ArrayList<Set<GdlSentence>>();
-        this.stateTimeHistory = new ArrayList<Date>();
-        this.errorHistory = new ArrayList<List<String>>();
+        this.moveHistory = new ArrayList<>();
+        this.stateHistory = new ArrayList<>();
+        this.stateTimeHistory = new ArrayList<>();
+        this.errorHistory = new ArrayList<>();
 
         JSONArray theMoves = theMatchObject.getJSONArray("moves");
         for (int i = 0; i < theMoves.length(); i++) {
-            List<GdlTerm> theMove = new ArrayList<GdlTerm>();
+            List<GdlTerm> theMove = new ArrayList<>();
             JSONArray moveElements = theMoves.getJSONArray(i);
             for (int j = 0; j < moveElements.length(); j++) {
                 theMove.add(GdlFactory.createTerm(moveElements.getString(j)));
@@ -143,11 +141,10 @@ public final class Match
         }
         JSONArray theStates = theMatchObject.getJSONArray("states");
         for (int i = 0; i < theStates.length(); i++) {
-            Set<GdlSentence> theState = new HashSet<GdlSentence>();
+            Set<GdlSentence> theState = new HashSet<>();
             SymbolList stateElements = (SymbolList) SymbolFactory.create(theStates.getString(i));
-            for (int j = 0; j < stateElements.size(); j++)
-            {
-                theState.add((GdlSentence)GdlFactory.create("( true " + stateElements.get(j).toString() + " )"));
+            for (int j = 0; j < stateElements.size(); j++) {
+                theState.add((GdlSentence) GdlFactory.create("( true " + stateElements.get(j).toString() + " )"));
             }
             stateHistory.add(theState);
         }
@@ -158,36 +155,37 @@ public final class Match
         if (theMatchObject.has("errors")) {
             JSONArray theErrors = theMatchObject.getJSONArray("errors");
             for (int i = 0; i < theErrors.length(); i++) {
-                List<String> theMoveErrors = new ArrayList<String>();
+                List<String> theMoveErrors = new ArrayList<>();
                 JSONArray errorElements = theErrors.getJSONArray(i);
-                for (int j = 0; j < errorElements.length(); j++)
-                {
+                for (int j = 0; j < errorElements.length(); j++) {
                     theMoveErrors.add(errorElements.getString(j));
                 }
                 errorHistory.add(theMoveErrors);
             }
         }
 
-        this.goalValues = new ArrayList<Integer>();
+        this.goalValues = new ArrayList<>();
         try {
             JSONArray theGoalValues = theMatchObject.getJSONArray("goalValues");
             for (int i = 0; i < theGoalValues.length(); i++) {
                 this.goalValues.add(theGoalValues.getInt(i));
             }
-        } catch (JSONException e) {}
+        } catch (JSONException e) {
+            // Do nothing
+        }
 
         // TODO: Add a way to recover cryptographic public keys and signatures.
         // Or, perhaps loading a match into memory for editing should strip those?
 
         if (theMatchObject.has("playerNamesFromHost")) {
-            thePlayerNamesFromHost = new ArrayList<String>();
+            thePlayerNamesFromHost = new ArrayList<>();
             JSONArray thePlayerNames = theMatchObject.getJSONArray("playerNamesFromHost");
             for (int i = 0; i < thePlayerNames.length(); i++) {
                 thePlayerNamesFromHost.add(thePlayerNames.getString(i));
             }
         }
         if (theMatchObject.has("isPlayerHuman")) {
-            isPlayerHuman = new ArrayList<Boolean>();
+            isPlayerHuman = new ArrayList<>();
             JSONArray isPlayerHumanArray = theMatchObject.getJSONArray("isPlayerHuman");
             for (int i = 0; i < isPlayerHumanArray.length(); i++) {
                 isPlayerHuman.add(isPlayerHumanArray.getBoolean(i));
@@ -216,10 +214,6 @@ public final class Match
         return thePlayerNamesFromHost;
     }
 
-    public void setWhichPlayersAreHuman(List<Boolean> isPlayerHuman) {
-        this.isPlayerHuman = isPlayerHuman;
-    }
-
     public void appendMoves(List<GdlTerm> moves) {
         moveHistory.add(moves);
     }
@@ -228,10 +222,7 @@ public final class Match
         // NOTE: This is appendMoves2 because it Java can't handle two
         // appendMove methods that both take List objects with different
         // templatized parameters.
-        List<GdlTerm> theMoves = new ArrayList<GdlTerm>();
-        for(Move m : moves) {
-            theMoves.add(m.getContents());
-        }
+        List<GdlTerm> theMoves = moves.stream().map(Move::getContents).collect(Collectors.toList());
         appendMoves(theMoves);
     }
 
@@ -242,14 +233,6 @@ public final class Match
 
     public void appendErrors(List<String> errors) {
         errorHistory.add(errors);
-    }
-
-    public void appendNoErrors() {
-        List<String> theNoErrors = new ArrayList<String>();
-        for (int i = 0; i < this.numRoles; i++) {
-            theNoErrors.add("");
-        }
-        errorHistory.add(theNoErrors);
     }
 
     public void markCompleted(List<Integer> theGoalValues) {
@@ -296,7 +279,7 @@ public final class Match
             if (tournamentNameFromHost != null) {
                 theJSON.put("tournamentNameFromHost", tournamentNameFromHost);
             }
-            theJSON.put("scrambled", theGdlScrambler != null ? theGdlScrambler.scrambles() : false);
+            theJSON.put("scrambled", theGdlScrambler != null && theGdlScrambler.scrambles());
         } catch (JSONException e) {
             return null;
         }
@@ -311,7 +294,6 @@ public final class Match
                     throw new Exception("Could not verify signed match: " + theJSON);
                 }
             } catch (Exception e) {
-                System.err.println(e);
                 theJSON.remove("matchHostPK");
                 theJSON.remove("matchHostSignature");
             }
@@ -377,10 +359,6 @@ public final class Match
         return matchId;
     }
 
-    public String getRandomToken() {
-        return randomToken;
-    }
-
     public String getSpectatorAuthToken() {
         return spectatorAuthToken;
     }
@@ -397,10 +375,6 @@ public final class Match
         return stateHistory;
     }
 
-    public List<Date> getStateTimeHistory() {
-        return stateTimeHistory;
-    }
-
     public List<List<String>> getErrorHistory() {
         return errorHistory;
     }
@@ -415,14 +389,6 @@ public final class Match
 
     public int getStartClock() {
         return startClock;
-    }
-
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    public String getTournamentNameFromHost() {
-        return tournamentNameFromHost;
     }
 
     public boolean isCompleted() {
@@ -443,7 +409,7 @@ public final class Match
 
     /* Static methods */
 
-    public static final String getRandomString(int nLength) {
+    public static String getRandomString(int nLength) {
         Random theGenerator = new Random();
         String theString = "";
         for (int i = 0; i < nLength; i++) {
@@ -457,7 +423,7 @@ public final class Match
 
     /* JSON rendering methods */
 
-    private static final String renderArrayAsJSON(List<?> theList, boolean useQuotes) {
+    private static String renderArrayAsJSON(List<?> theList, boolean useQuotes) {
         String s = "[";
         for (int i = 0; i < theList.size(); i++) {
             Object o = theList.get(i);
@@ -474,31 +440,19 @@ public final class Match
         return s + "]";
     }
 
-    private static final List<String> renderStateHistory(List<Set<GdlSentence>> stateHistory) {
-        List<String> renderedStates = new ArrayList<String>();
-        for (Set<GdlSentence> aState : stateHistory) {
-            renderedStates.add(renderStateAsSymbolList(aState));
-        }
-        return renderedStates;
+    private static List<String> renderStateHistory(List<Set<GdlSentence>> stateHistory) {
+        return stateHistory.stream().map(Match::renderStateAsSymbolList).collect(Collectors.toList());
     }
 
-    private static final List<String> renderMoveHistory(List<List<GdlTerm>> moveHistory) {
-        List<String> renderedMoves = new ArrayList<String>();
-        for (List<GdlTerm> aMove : moveHistory) {
-            renderedMoves.add(renderArrayAsJSON(aMove, true));
-        }
-        return renderedMoves;
+    private static List<String> renderMoveHistory(List<List<GdlTerm>> moveHistory) {
+        return moveHistory.stream().map(aMove -> renderArrayAsJSON(aMove, true)).collect(Collectors.toList());
     }
 
-    private static final List<String> renderErrorHistory(List<List<String>> errorHistory) {
-        List<String> renderedErrors = new ArrayList<String>();
-        for (List<String> anError : errorHistory) {
-            renderedErrors.add(renderArrayAsJSON(anError, true));
-        }
-        return renderedErrors;
+    private static List<String> renderErrorHistory(List<List<String>> errorHistory) {
+        return errorHistory.stream().map(anError -> renderArrayAsJSON(anError, true)).collect(Collectors.toList());
     }
 
-    private static final String renderStateAsSymbolList(Set<GdlSentence> theState) {
+    private static String renderStateAsSymbolList(Set<GdlSentence> theState) {
         // Strip out the TRUE proposition, since those are implied for states.
         String s = "( ";
         for (GdlSentence sent : theState) {
@@ -510,11 +464,11 @@ public final class Match
 
     /* XML Rendering methods -- these are horribly inefficient and are included only for legacy/standards compatibility */
 
-    private static final String renderLeafXML(String tagName, Object value) {
+    private static String renderLeafXML(String tagName, Object value) {
         return "<" + tagName + ">" + value.toString() + "</" + tagName + ">";
     }
 
-    private static final String renderMoveHistoryXML(List<List<GdlTerm>> moveHistory) {
+    private static String renderMoveHistoryXML(List<List<GdlTerm>> moveHistory) {
         StringBuilder theXML = new StringBuilder();
         theXML.append("<history>");
         for (List<GdlTerm> move : moveHistory) {
@@ -528,7 +482,7 @@ public final class Match
         return theXML.toString();
     }
 
-    private static final String renderErrorHistoryXML(List<List<String>> errorHistory) {
+    private static String renderErrorHistoryXML(List<List<String>> errorHistory) {
         StringBuilder theXML = new StringBuilder();
         theXML.append("<errorHistory>");
         for (List<String> errors : errorHistory) {
@@ -542,7 +496,7 @@ public final class Match
         return theXML.toString();
     }
 
-    private static final String renderStateHistoryXML(List<Set<GdlSentence>> stateHistory) {
+    private static String renderStateHistoryXML(List<Set<GdlSentence>> stateHistory) {
         StringBuilder theXML = new StringBuilder();
         theXML.append("<herstory>");
         for (Set<GdlSentence> state : stateHistory) {
@@ -552,7 +506,7 @@ public final class Match
         return theXML.toString();
     }
 
-    public static final String renderStateXML(Set<GdlSentence> state) {
+    public static String renderStateXML(Set<GdlSentence> state) {
         StringBuilder theXML = new StringBuilder();
         theXML.append("<state>");
         for (GdlSentence sentence : state) {
@@ -562,7 +516,7 @@ public final class Match
         return theXML.toString();
     }
 
-    private static final String renderArrayXML(String tag, JSONArray arr) throws JSONException {
+    private static String renderArrayXML(String tag, JSONArray arr) throws JSONException {
         StringBuilder theXML = new StringBuilder();
         for (int i = 0; i < arr.length(); i++) {
             theXML.append(renderLeafXML(tag, arr.get(i)));
@@ -570,7 +524,7 @@ public final class Match
         return theXML.toString();
     }
 
-    private static final String renderGdlToXML(Gdl gdl) {
+    private static String renderGdlToXML(Gdl gdl) {
         String rval = "";
         if(gdl instanceof GdlConstant) {
             GdlConstant c = (GdlConstant)gdl;

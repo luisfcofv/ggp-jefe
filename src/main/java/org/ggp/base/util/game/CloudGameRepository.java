@@ -1,11 +1,8 @@
 package org.ggp.base.util.game;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import external.JSON.JSONObject;
+
+import java.io.*;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,14 +11,12 @@ import java.util.Set;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import external.JSON.JSONObject;
-
 /**
  * Cloud game repositories provide access to game resources stored on game
  * repository servers on the web, while continuing to work while the user is
  * offline through aggressive caching based on the immutability + versioning
  * scheme provided by the repository servers.
- *
+ * <p>
  * Essentially, each game has a version number stored in the game metadata
  * file. Game resources are immutable until this version number changes, at
  * which point the game needs to be reloaded. Version numbers are passed along
@@ -31,7 +26,7 @@ import external.JSON.JSONObject;
  * to worry about our offline cache becoming stale/invalid. However, to stay up
  * to date with the latest bugfixes, etc, we aggressively refresh the cache any
  * time we can connect to the repository server, as a matter of policy.
- *
+ * <p>
  * Cached games are stored locally, in a directory managed by this class. These
  * files are compressed, to decrease their footprint on the local disk. GGP Base
  * has its SVN rules set up so that these caches are ignored by SVN.
@@ -53,10 +48,10 @@ public final class CloudGameRepository extends GameRepository {
             byte[] bytesOfMessage = theRepoURL.getBytes("UTF-8");
             MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] theDigest = md.digest(bytesOfMessage);
-            for(int i = 0; i < theDigest.length; i++) {
+            for (int i = 0; i < theDigest.length; i++) {
                 theCacheHash.append(Math.abs(theDigest[i]));
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             theCacheHash = null;
         }
 
@@ -91,7 +86,7 @@ public final class CloudGameRepository extends GameRepository {
     @Override
     protected Set<String> getUncachedGameKeys() {
         Set<String> theKeys = new HashSet<String>();
-        for(File game : theCacheDirectory.listFiles()) {
+        for (File game : theCacheDirectory.listFiles()) {
             theKeys.add(game.getName().replace(".zip", ""));
         }
         return theKeys;
@@ -283,7 +278,7 @@ public final class CloudGameRepository extends GameRepository {
         long beginTime = System.currentTimeMillis();
 
         Map<String, Game> theGames = new HashMap<String, Game>();
-        for(String gameKey : theRepository.getGameKeys()) {
+        for (String gameKey : theRepository.getGameKeys()) {
             theGames.put(gameKey, theRepository.getGame(gameKey));
         }
         System.out.println("Games: " + theGames.size());

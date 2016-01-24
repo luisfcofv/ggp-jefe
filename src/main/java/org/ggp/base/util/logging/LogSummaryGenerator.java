@@ -7,12 +7,7 @@ public abstract class LogSummaryGenerator {
     public String getLogSummary(String matchId) {
         final String thePrefix = matchId;
         File logsDirectory = new File("logs");
-        FilenameFilter logsFilter = new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.startsWith(thePrefix);
-            }
-        };
+        FilenameFilter logsFilter = (dir, name) -> name.startsWith(thePrefix);
         String[] theMatchingMatches = logsDirectory.list(logsFilter);
         if (theMatchingMatches == null) {
             System.err.println("Log summary retrieval for " + matchId + " yielded an error.");
