@@ -6,8 +6,10 @@ Jefe is based on general game playing base package https://github.com/ggp-org/gg
 
 #### Requirements
 
-Java 8 or later.
-Kotlin 1.0.0-beta-4589 or later.
+* Java 8 or later.
+* Kotlin 1.0.0-beta-4589 or later.
+
+#### Usage
 
 Sample commands (use gradlew.bat instead if on Windows):
 
