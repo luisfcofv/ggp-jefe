@@ -1,12 +1,15 @@
 # JEFE - GENERAL GAME PLAYING PLAYER
 
-Jefe is a general game playing player used in the course T-732-GAPL, General Game Playing at Reykjavik University.
+Jefe is a general game playing gamer written in Kotlin used in the course T-732-GAPL, General Game Playing at Reykjavik University.
 
 Jefe is based on general game playing base package https://github.com/ggp-org/ggp-base.
 
 #### Requirements
 
-The project must be built with Java 8 or later.
+* Java 8 or later.
+* Kotlin 1.0.0-beta-4589 or later.
+
+#### Usage
 
 Sample commands (use gradlew.bat instead if on Windows):
 
