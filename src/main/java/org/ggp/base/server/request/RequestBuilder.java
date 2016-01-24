@@ -1,11 +1,11 @@
 package org.ggp.base.server.request;
 
-import java.util.List;
-
 import org.ggp.base.util.gdl.grammar.Gdl;
 import org.ggp.base.util.gdl.scrambler.GdlScrambler;
 import org.ggp.base.util.statemachine.Move;
 import org.ggp.base.util.statemachine.Role;
+
+import java.util.List;
 
 
 public final class RequestBuilder
@@ -17,10 +17,10 @@ public final class RequestBuilder
         } else {
             StringBuilder sb = new StringBuilder();
 
-            sb.append("( PLAY " + matchId + " (");
+            sb.append("( PLAY ").append(matchId).append(" (");
             for (Move move : moves)
             {
-                sb.append(scrambler.scramble(move.getContents()) + " ");
+                sb.append(scrambler.scramble(move.getContents())).append(" ");
             }
             sb.append(") )");
 

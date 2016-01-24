@@ -1,31 +1,7 @@
 package org.ggp.base.server;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.ggp.base.server.event.ServerAbortedMatchEvent;
-import org.ggp.base.server.event.ServerCompletedMatchEvent;
-import org.ggp.base.server.event.ServerConnectionErrorEvent;
-import org.ggp.base.server.event.ServerIllegalMoveEvent;
-import org.ggp.base.server.event.ServerMatchUpdatedEvent;
-import org.ggp.base.server.event.ServerNewGameStateEvent;
-import org.ggp.base.server.event.ServerNewMatchEvent;
-import org.ggp.base.server.event.ServerNewMovesEvent;
-import org.ggp.base.server.event.ServerTimeEvent;
-import org.ggp.base.server.event.ServerTimeoutEvent;
-import org.ggp.base.server.threads.AbortRequestThread;
-import org.ggp.base.server.threads.PlayRequestThread;
-import org.ggp.base.server.threads.PreviewRequestThread;
-import org.ggp.base.server.threads.RandomPlayRequestThread;
-import org.ggp.base.server.threads.StartRequestThread;
-import org.ggp.base.server.threads.StopRequestThread;
+import org.ggp.base.server.event.*;
+import org.ggp.base.server.threads.*;
 import org.ggp.base.util.match.Match;
 import org.ggp.base.util.match.MatchPublisher;
 import org.ggp.base.util.observer.Event;
@@ -38,6 +14,12 @@ import org.ggp.base.util.statemachine.StateMachine;
 import org.ggp.base.util.statemachine.exceptions.GoalDefinitionException;
 import org.ggp.base.util.statemachine.exceptions.MoveDefinitionException;
 import org.ggp.base.util.statemachine.implementation.prover.ProverStateMachine;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 
 public final class GameServer extends Thread implements Subject
 {
@@ -77,11 +59,11 @@ public final class GameServer extends Thread implements Subject
         currentState = stateMachine.getInitialState();
         previousMoves = null;
 
-        mostRecentErrors = new HashMap<Role,String>();
+        mostRecentErrors = new HashMap<>();
 
         match.appendState(currentState.getContents());
 
-        observers = new ArrayList<Observer>();
+        observers = new ArrayList<>();
 
         spectatorServerURL = null;
         forceUsingEntireClock = false;
@@ -102,7 +84,7 @@ public final class GameServer extends Thread implements Subject
     }
 
     public List<Integer> getGoals() throws GoalDefinitionException {
-        List<Integer> goals = new ArrayList<Integer>();
+        List<Integer> goals = new ArrayList<>();
         for (Role role : stateMachine.getRoles()) {
             goals.add(stateMachine.getGoal(currentState, role));
         }
@@ -136,7 +118,7 @@ public final class GameServer extends Thread implements Subject
     // Should be called after each move, to collect all of the errors
     // caused by players and write them into the match description.
     private void appendErrorsToMatchDescription() {
-        List<String> theErrors = new ArrayList<String>();
+        List<String> theErrors = new ArrayList<>();
         for (int i = 0; i < stateMachine.getRoles().size(); i++) {
             Role r = stateMachine.getRoles().get(i);
             if (mostRecentErrors.containsKey(r)) {
@@ -188,9 +170,7 @@ public final class GameServer extends Thread implements Subject
             notifyObservers(new ServerMatchUpdatedEvent(match, spectatorServerKey, saveToFilename));
             sendStopRequests(previousMoves);
         } catch (InterruptedException ie) {
-            if (match.isAborted()) {
-                return;
-            } else {
+            if (!match.isAborted()) {
                 ie.printStackTrace();
             }
         } catch (Exception e) {
@@ -223,7 +203,7 @@ public final class GameServer extends Thread implements Subject
             }
             FileWriter fw = new FileWriter(file);
             BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(match.toJSON().toString());
+            bw.write(match.toJSON());
             bw.close();
             fw.close();
         } catch (IOException ie) {
@@ -251,12 +231,8 @@ public final class GameServer extends Thread implements Subject
         }
     }
 
-    public String getSpectatorServerKey() {
-        return spectatorServerKey;
-    }
-
     private synchronized List<Move> sendPlayRequests() throws InterruptedException, MoveDefinitionException {
-        List<PlayRequestThread> threads = new ArrayList<PlayRequestThread>(hosts.size());
+        List<PlayRequestThread> threads = new ArrayList<>(hosts.size());
         for (int i = 0; i < hosts.size(); i++) {
             List<Move> legalMoves = stateMachine.getLegalMoves(currentState, stateMachine.getRoles().get(i));
             if (playerPlaysRandomly[i]) {
@@ -265,15 +241,13 @@ public final class GameServer extends Thread implements Subject
                 threads.add(new PlayRequestThread(this, match, previousMoves, legalMoves, stateMachine.getRoles().get(i), hosts.get(i), ports.get(i), getPlayerNameFromMatchForRequest(i), playerGetsUnlimitedTime[i]));
             }
         }
-        for (PlayRequestThread thread : threads) {
-            thread.start();
-        }
+        threads.forEach(PlayRequestThread::start);
 
         if (forceUsingEntireClock) {
             Thread.sleep(match.getPlayClock() * 1000);
         }
 
-        List<Move> moves = new ArrayList<Move>();
+        List<Move> moves = new ArrayList<>();
         for (PlayRequestThread thread : threads) {
             thread.join();
             moves.add(thread.getMove());
@@ -283,15 +257,13 @@ public final class GameServer extends Thread implements Subject
     }
 
     private synchronized void sendPreviewRequests() throws InterruptedException {
-        List<PreviewRequestThread> threads = new ArrayList<PreviewRequestThread>(hosts.size());
+        List<PreviewRequestThread> threads = new ArrayList<>(hosts.size());
         for (int i = 0; i < hosts.size(); i++) {
             if (!playerPlaysRandomly[i]) {
                 threads.add(new PreviewRequestThread(this, match, stateMachine.getRoles().get(i), hosts.get(i), ports.get(i), getPlayerNameFromMatchForRequest(i)));
             }
         }
-        for (PreviewRequestThread thread : threads) {
-            thread.start();
-        }
+        threads.forEach(PreviewRequestThread::start);
         if (forceUsingEntireClock) {
             Thread.sleep(match.getStartClock() * 1000);
         }
@@ -301,15 +273,13 @@ public final class GameServer extends Thread implements Subject
     }
 
     private synchronized void sendStartRequests() throws InterruptedException {
-        List<StartRequestThread> threads = new ArrayList<StartRequestThread>(hosts.size());
+        List<StartRequestThread> threads = new ArrayList<>(hosts.size());
         for (int i = 0; i < hosts.size(); i++) {
             if (!playerPlaysRandomly[i]) {
                 threads.add(new StartRequestThread(this, match, stateMachine.getRoles().get(i), hosts.get(i), ports.get(i), getPlayerNameFromMatchForRequest(i)));
             }
         }
-        for (StartRequestThread thread : threads) {
-            thread.start();
-        }
+        threads.forEach(StartRequestThread::start);
         if (forceUsingEntireClock) {
             Thread.sleep(match.getStartClock() * 1000);
         }
@@ -319,30 +289,26 @@ public final class GameServer extends Thread implements Subject
     }
 
     private synchronized void sendStopRequests(List<Move> previousMoves) throws InterruptedException {
-        List<StopRequestThread> threads = new ArrayList<StopRequestThread>(hosts.size());
+        List<StopRequestThread> threads = new ArrayList<>(hosts.size());
         for (int i = 0; i < hosts.size(); i++) {
             if (!playerPlaysRandomly[i]) {
                 threads.add(new StopRequestThread(this, match, previousMoves, stateMachine.getRoles().get(i), hosts.get(i), ports.get(i), getPlayerNameFromMatchForRequest(i)));
             }
         }
-        for (StopRequestThread thread : threads) {
-            thread.start();
-        }
+        threads.forEach(StopRequestThread::start);
         for (StopRequestThread thread : threads) {
             thread.join();
         }
     }
 
     private void sendAbortRequests() throws InterruptedException {
-        List<AbortRequestThread> threads = new ArrayList<AbortRequestThread>(hosts.size());
+        List<AbortRequestThread> threads = new ArrayList<>(hosts.size());
         for (int i = 0; i < hosts.size(); i++) {
             if (!playerPlaysRandomly[i]) {
                 threads.add(new AbortRequestThread(this, match, stateMachine.getRoles().get(i), hosts.get(i), ports.get(i), getPlayerNameFromMatchForRequest(i)));
             }
         }
-        for (AbortRequestThread thread : threads) {
-            thread.start();
-        }
+        threads.forEach(AbortRequestThread::start);
         for (AbortRequestThread thread : threads) {
             thread.join();
         }

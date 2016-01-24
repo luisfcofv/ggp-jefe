@@ -13,8 +13,6 @@ buildscript {
     }
 }
 
-apply plugin: "kotlin"
-
 sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
 }
@@ -32,6 +30,7 @@ dependencies {
     compile 'org.javassist:javassist:3.20.0-GA'
 
     testCompile 'junit:junit:4.12'
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 
     compile files(
         'lib/Batik/batik-1.7.jar',
@@ -110,7 +109,6 @@ task gameServerRunner(type: JavaExec) {
     }
 }
 
-// This was used to generate the Gradle wrapper.
 task wrapper(type: Wrapper) {
     gradleVersion = '2.10'
 }

@@ -1,35 +1,9 @@
 package org.ggp.base.apps.server;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JSpinner;
-import javax.swing.JTabbedPane;
-import javax.swing.SpinnerNumberModel;
-
 import org.ggp.base.apps.server.leaderboard.LeaderboardPanel;
 import org.ggp.base.apps.server.scheduling.PendingMatch;
 import org.ggp.base.apps.server.scheduling.Scheduler;
 import org.ggp.base.apps.server.scheduling.SchedulingPanel;
-import org.ggp.base.util.crypto.BaseCryptography.EncodedKeyPair;
 import org.ggp.base.util.game.Game;
 import org.ggp.base.util.game.GameRepository;
 import org.ggp.base.util.gdl.grammar.GdlPool;
@@ -42,6 +16,14 @@ import org.ggp.base.util.ui.GameSelector;
 import org.ggp.base.util.ui.JLabelBold;
 import org.ggp.base.util.ui.NativeUI;
 import org.ggp.base.util.ui.PlayerSelector;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public final class Server extends JPanel implements ActionListener
@@ -64,15 +46,7 @@ public final class Server extends JPanel implements ActionListener
         GdlPool.caseSensitive = false;
 
         final Server serverPanel = new Server();
-        javax.swing.SwingUtilities.invokeLater(new Runnable()
-        {
-
-            @Override
-            public void run()
-            {
-                createAndShowGUI(serverPanel, "Game Server");
-            }
-        });
+        javax.swing.SwingUtilities.invokeLater(() -> createAndShowGUI(serverPanel, "Game Server"));
     }
 
     private Game theGame;
@@ -119,8 +93,8 @@ public final class Server extends JPanel implements ActionListener
         gamePanel = new JPanel(new GridBagLayout());
         playersPanel = new JPanel(new GridBagLayout());
 
-        roleLabels = new ArrayList<JLabel>();
-        playerFields = new ArrayList<JComboBox<String>>();
+        roleLabels = new ArrayList<>();
+        playerFields = new ArrayList<>();
         theGame = null;
 
         shouldScramble = new JCheckBox("Scramble GDL?", true);
@@ -181,10 +155,6 @@ public final class Server extends JPanel implements ActionListener
         scheduler.start();
     }
 
-    public void setSigningKeys(EncodedKeyPair keys) {
-        scheduler.signingKeys = keys;
-    }
-
     class OverviewPanel extends JPanel {
         public OverviewPanel() {
             super(new GridBagLayout());
@@ -238,7 +208,7 @@ public final class Server extends JPanel implements ActionListener
                 int startClock = (Integer)startClockSpinner.getValue();
                 int playClock = (Integer)playClockSpinner.getValue();
 
-                List<PlayerPresence> thePlayers = new ArrayList<PlayerPresence>();
+                List<PlayerPresence> thePlayers = new ArrayList<>();
                 for (JComboBox<String> playerField : playerFields) {
                     String name = playerField.getSelectedItem().toString();
                     thePlayers.add(playerSelector.getPlayerPresence(name));
@@ -246,12 +216,12 @@ public final class Server extends JPanel implements ActionListener
 
                 synchronized (scheduler) {
                     for (int i = 0; i < (Integer)repetitionsSpinner.getValue(); i++) {
-                        scheduler.addPendingMatch(new PendingMatch("Base", theGame, new ArrayList<PlayerPresence>(thePlayers), -1, startClock, playClock, shouldScramble.isSelected(), shouldQueue.isSelected(), shouldDetail.isSelected(), shouldSave.isSelected(), shouldPublish.isSelected()));
+                        scheduler.addPendingMatch(new PendingMatch("Base", theGame, new ArrayList<>(thePlayers), -1, startClock, playClock, shouldScramble.isSelected(), shouldQueue.isSelected(), shouldDetail.isSelected(), shouldSave.isSelected(), shouldPublish.isSelected()));
                         thePlayers.add(thePlayers.remove(0));  // rotate player roster for repeated matches
                         try {
                             Thread.sleep(10);
                         } catch (InterruptedException ie) {
-                            ;
+                            ie.printStackTrace();
                         }
                     }
                 }
@@ -265,8 +235,8 @@ public final class Server extends JPanel implements ActionListener
             public void actionPerformed(ActionEvent evt) {
                 if (playerSelectorList.getSelectedValue() != null) {
                     Game testGame = GameRepository.getDefaultRepository().getGame("maze");
-                    String playerName = playerSelectorList.getSelectedValue().toString();
-                    List<PlayerPresence> thePlayers = Arrays.asList(new PlayerPresence[]{playerSelector.getPlayerPresence(playerName)});
+                    String playerName = playerSelectorList.getSelectedValue();
+                    List<PlayerPresence> thePlayers = Collections.singletonList(playerSelector.getPlayerPresence(playerName));
                     scheduler.addPendingMatch(new PendingMatch("Test", testGame, thePlayers, -1, 10, 5, shouldScramble.isSelected(), false, shouldDetail.isSelected(), false, false));
                 }
             }
@@ -292,7 +262,7 @@ public final class Server extends JPanel implements ActionListener
             @Override
             public void actionPerformed(ActionEvent evt) {
                 if (playerSelectorList.getSelectedValue() != null) {
-                    playerSelector.removePlayer(playerSelectorList.getSelectedValue().toString());
+                    playerSelector.removePlayer(playerSelectorList.getSelectedValue());
                 }
             }
         };

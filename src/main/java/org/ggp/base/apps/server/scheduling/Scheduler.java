@@ -1,19 +1,5 @@
 package org.ggp.base.apps.server.scheduling;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.io.File;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.swing.AbstractAction;
-import javax.swing.JTabbedPane;
-
 import org.ggp.base.apps.server.error.ErrorPanel;
 import org.ggp.base.apps.server.history.HistoryPanel;
 import org.ggp.base.apps.server.leaderboard.LeaderboardPanel;
@@ -27,6 +13,14 @@ import org.ggp.base.util.observer.Event;
 import org.ggp.base.util.observer.Observer;
 import org.ggp.base.util.presence.PlayerPresence;
 import org.ggp.base.util.ui.CloseableTabs;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.util.*;
+import java.util.List;
 
 public final class Scheduler implements Observer
 {
@@ -45,9 +39,9 @@ public final class Scheduler implements Observer
         this.schedulingPanel = schedulingPanel;
         this.leaderboardPanel = leaderboardPanel;
         this.matchesTabbedPane = matchesTabbedPane;
-        schedulingQueue = new ArrayList<PendingMatch>();
-        activePlayers = new HashSet<String>();
-        gameServers = new HashMap<String, WeakReference<GameServer>>();
+        schedulingQueue = new ArrayList<>();
+        activePlayers = new HashSet<>();
+        gameServers = new HashMap<>();
     }
 
     public void start() {
@@ -88,9 +82,9 @@ public final class Scheduler implements Observer
         try {
             Match match = new Match(spec.matchID, spec.previewClock, spec.startClock, spec.playClock, spec.theGame, "");
 
-            List<String> hosts = new ArrayList<String>(spec.thePlayers.size());
-            List<Integer> ports = new ArrayList<Integer>(spec.thePlayers.size());
-            List<String> playerNames = new ArrayList<String>(spec.thePlayers.size());
+            List<String> hosts = new ArrayList<>(spec.thePlayers.size());
+            List<Integer> ports = new ArrayList<>(spec.thePlayers.size());
+            List<String> playerNames = new ArrayList<>(spec.thePlayers.size());
             for (PlayerPresence player : spec.thePlayers) {
                 hosts.add(player.getHost());
                 ports.add(player.getPort());
@@ -146,7 +140,7 @@ public final class Scheduler implements Observer
                 }
             }
 
-            gameServers.put(spec.matchID, new WeakReference<GameServer>(gameServer));
+            gameServers.put(spec.matchID, new WeakReference<>(gameServer));
             schedulingQueue.remove(spec);
         } catch (Exception e) {
             e.printStackTrace();
@@ -183,7 +177,7 @@ public final class Scheduler implements Observer
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException ie) {
-                    ;
+
                 }
                 PendingMatch matchToSchedule = null;
                 for (PendingMatch spec : schedulingQueue) {
