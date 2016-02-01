@@ -1,8 +1,5 @@
 package org.ggp.base.player.gamer.statemachine.random;
 
-import java.util.List;
-import java.util.Random;
-
 import org.ggp.base.apps.player.detail.DetailPanel;
 import org.ggp.base.apps.player.detail.SimpleDetailPanel;
 import org.ggp.base.player.gamer.event.GamerSelectedMoveEvent;
@@ -16,6 +13,9 @@ import org.ggp.base.util.statemachine.exceptions.GoalDefinitionException;
 import org.ggp.base.util.statemachine.exceptions.MoveDefinitionException;
 import org.ggp.base.util.statemachine.exceptions.TransitionDefinitionException;
 import org.ggp.base.util.statemachine.implementation.prover.ProverStateMachine;
+
+import java.util.List;
+import java.util.Random;
 
 /**
  * RandomGamer is a very simple state-machine-based Gamer that will always
@@ -31,6 +31,7 @@ public final class RandomGamer extends StateMachineGamer
     @Override
     public Move stateMachineSelectMove(long timeout) throws TransitionDefinitionException, MoveDefinitionException, GoalDefinitionException
     {
+        System.out.println("stateMachineSelectMove " + timeout);
         long start = System.currentTimeMillis();
 
         List<Move> moves = getStateMachine().getLegalMoves(getCurrentState(), getRole());

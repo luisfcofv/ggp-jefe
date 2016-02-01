@@ -1,10 +1,5 @@
 package org.ggp.base.player.gamer.statemachine.sample;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
 import org.ggp.base.apps.player.detail.DetailPanel;
 import org.ggp.base.apps.player.detail.SimpleDetailPanel;
 import org.ggp.base.player.gamer.event.GamerSelectedMoveEvent;
@@ -19,6 +14,11 @@ import org.ggp.base.util.statemachine.exceptions.GoalDefinitionException;
 import org.ggp.base.util.statemachine.exceptions.MoveDefinitionException;
 import org.ggp.base.util.statemachine.exceptions.TransitionDefinitionException;
 import org.ggp.base.util.statemachine.implementation.prover.ProverStateMachine;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /**
  * SampleSearchLightGamer is a simple state-machine-based Gamer. It will,
@@ -78,7 +78,7 @@ public final class SampleSearchLightGamer extends StateMachineGamer
         // Shuffle the moves into a random order, so that when we find the first
         // move that doesn't give our opponent a forced win, we aren't always choosing
         // the first legal move over and over (which is visibly repetitive).
-        moves = new ArrayList<Move>(moves);
+        moves = new ArrayList<>(moves);
         Collections.shuffle(moves);
 
         // Go through all of the legal moves in a random over, and consider each one.
