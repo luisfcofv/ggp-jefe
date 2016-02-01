@@ -2,12 +2,12 @@
 import org.ggp.base.player.gamer.statemachine.sample.SampleGamer
 import org.ggp.base.util.statemachine.MachineState
 import org.ggp.base.util.statemachine.Move
-import java.util.*
 
 class JefeGamer : SampleGamer() {
-    private val random = Random()
-    private var betterMove: Move? = null
-    private var betterScore: Int? = 0
+
+    override fun getName(): String? {
+        return "Jefe"
+    }
 
     override fun stateMachineSelectMove(timeout: Long): Move? {
         //  procedure IDDFS(root)
@@ -26,47 +26,65 @@ class JefeGamer : SampleGamer() {
         //                  return found
         //      return null
 
+        val finishBy: Long = timeout - 1000
         var moves = stateMachine.getLegalMoves(currentState, role)
-        betterMove = moves[random.nextInt(moves.size)]
 
-        val finishBy:Long = timeout - 1000
+        var bestMove = moves[0]
+        var bestScore: Int = 0
+        var depth: Int = 0
+        var found: Boolean = false
 
-        var depth = 0
-        while (System.currentTimeMillis() < finishBy) {
+        while (System.currentTimeMillis() <= finishBy) {
             for (move in moves) {
                 var stateMachine = stateMachine.getNextState(currentState, listOf(move))
-                var found = dls(stateMachine, depth, finishBy)
-                if (found != null) {
-                    betterMove = move
+                var score = dls(stateMachine, depth, finishBy)
+                if (score > bestScore) {
+                    bestScore = score
+                    bestMove = move
+
+                    if (bestScore == 100) {
+                        found = true
+                        break
+                    }
                 }
             }
+
+            if (found) {
+                break
+            }
+
+            depth++
         }
 
-        return betterMove
+        return bestMove
     }
 
-    fun dls(node: MachineState, depth: Int, finishBy:Long): MachineState?  {
+    fun dls(node: MachineState, depth: Int, finishBy:Long): Int  {
         if (depth == 0 && stateMachine.isTerminal(node) && stateMachine.getGoal(node, role) != 0) {
-            return node
+            return stateMachine.getGoal(node, role)
         } else if (depth > 0) {
             if (System.currentTimeMillis() > finishBy) {
-                return null
+                return 0
             }
+
+            var bestScore: Int = 0
 
             var moves = stateMachine.getLegalMoves(node, role)
             for (move in moves) {
                 var stateMachine = stateMachine.getNextState(node, listOf(move))
-                var found = dls(stateMachine, depth - 1, finishBy)
-                if (found != null) {
-                    return stateMachine
+                var score = dls(stateMachine, depth - 1, finishBy)
+                if (score > bestScore) {
+                    bestScore = score
+
+                    if (score == 100) {
+                        return score
+                    }
                 }
             }
+
+            return bestScore
         }
 
-        return null
-    }
-
-    override fun getName(): String? {
-        return "Jefe"
+        return 0
     }
 }
