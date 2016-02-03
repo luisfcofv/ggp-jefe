@@ -1,9 +1,9 @@
 package org.ggp.base.util.statemachine;
 
+import org.ggp.base.util.gdl.grammar.GdlSentence;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import org.ggp.base.util.gdl.grammar.GdlSentence;
 
 public class MachineState {
     public MachineState() {
@@ -33,7 +33,7 @@ public class MachineState {
 
     @Override
     public MachineState clone() {
-        return new MachineState(new HashSet<GdlSentence>(contents));
+        return new MachineState(new HashSet<>(contents));
     }
 
     /* Utility methods */
