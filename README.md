@@ -11,7 +11,13 @@ Jefe is based on general game playing base package https://github.com/ggp-org/gg
 
 #### Usage
 
-Sample commands (use gradlew.bat instead if on Windows):
+Jefe commands:
+
+* `./jefe.sh <Port>` - Run Jefe gamer in the specified port
+* `python jefe.py -p <Port>` - Run Jefe gamer in the specified port, default port is 9147
+
+
+Gradle commands (use gradlew.bat instead if on Windows):
 
 * `./gradlew -v` - Confirm Gradle version.
 * `./gradlew tasks` - Show list of available tasks.
