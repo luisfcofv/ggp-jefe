@@ -13,7 +13,7 @@ class JefeGamer : SampleGamer() {
 
     override fun stateMachineMetaGame(timeout: Long) {
         super.stateMachineMetaGame(timeout)
-        started = System.currentTimeMillis();
+        started = System.currentTimeMillis()
     }
 
     override fun stateMachineStop() {
@@ -58,7 +58,7 @@ class JefeGamer : SampleGamer() {
     }
 
     fun dls(node: MachineState, depth: Int, finishBy:Long): Int  {
-        if (statesVisited[node.hashCode()] != null && statesVisited[node.hashCode()] == 1) {
+        if (statesVisited[node.hashCode()] == 1) {
             return 0
         }
 
@@ -71,7 +71,7 @@ class JefeGamer : SampleGamer() {
             return 1
         } else if (depth > 0) {
             if (System.currentTimeMillis() > finishBy) {
-                return 0
+                return 1
             }
 
             var bestScore: Int = 0
