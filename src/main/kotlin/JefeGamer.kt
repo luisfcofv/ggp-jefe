@@ -24,7 +24,7 @@ class JefeGamer : SampleGamer() {
     override fun stateMachineSelectMove(timeout: Long): Move? {
         var searchStarted = System.currentTimeMillis()
 
-        val finishBy: Long = timeout - 1000
+        val finishBy: Long = timeout - 300
         var moves = stateMachine.getLegalMoves(currentState, role)
 
         var bestMove = moves[0]
