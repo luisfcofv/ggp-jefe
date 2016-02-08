@@ -1,13 +1,6 @@
 package org.ggp.base.util.statemachine;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
+import com.google.common.collect.ImmutableMap;
 import org.ggp.base.util.gdl.grammar.Gdl;
 import org.ggp.base.util.gdl.grammar.GdlConstant;
 import org.ggp.base.util.gdl.grammar.GdlSentence;
@@ -16,7 +9,7 @@ import org.ggp.base.util.statemachine.exceptions.GoalDefinitionException;
 import org.ggp.base.util.statemachine.exceptions.MoveDefinitionException;
 import org.ggp.base.util.statemachine.exceptions.TransitionDefinitionException;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.*;
 
 
 /**
@@ -134,7 +127,6 @@ public abstract class StateMachine
      *           is not "theState" or one of its descendants in the game tree.
      */
     public void updateRoot(MachineState theState) {
-        ;
     }
 
     // ============================================
@@ -159,13 +151,13 @@ public abstract class StateMachine
      */
     public List<List<Move>> getLegalJointMoves(MachineState state) throws MoveDefinitionException
     {
-        List<List<Move>> legals = new ArrayList<List<Move>>();
+        List<List<Move>> legals = new ArrayList<>();
         for (Role role : getRoles()) {
             legals.add(getLegalMoves(state, role));
         }
 
-        List<List<Move>> crossProduct = new ArrayList<List<Move>>();
-        crossProductLegalMoves(legals, crossProduct, new LinkedList<Move>());
+        List<List<Move>> crossProduct = new ArrayList<>();
+        crossProductLegalMoves(legals, crossProduct, new LinkedList<>());
 
         return crossProduct;
     }
@@ -177,10 +169,10 @@ public abstract class StateMachine
      */
     public List<List<Move>> getLegalJointMoves(MachineState state, Role role, Move move) throws MoveDefinitionException
     {
-        List<List<Move>> legals = new ArrayList<List<Move>>();
+        List<List<Move>> legals = new ArrayList<>();
         for (Role r : getRoles()) {
             if (r.equals(role)) {
-                List<Move> m = new ArrayList<Move>();
+                List<Move> m = new ArrayList<>();
                 m.add(move);
                 legals.add(m);
             } else {
@@ -188,8 +180,8 @@ public abstract class StateMachine
             }
         }
 
-        List<List<Move>> crossProduct = new ArrayList<List<Move>>();
-        crossProductLegalMoves(legals, crossProduct, new LinkedList<Move>());
+        List<List<Move>> crossProduct = new ArrayList<>();
+        crossProductLegalMoves(legals, crossProduct, new LinkedList<>());
 
         return crossProduct;
     }
@@ -202,7 +194,7 @@ public abstract class StateMachine
      */
     public List<MachineState> getNextStates(MachineState state) throws MoveDefinitionException, TransitionDefinitionException
     {
-        List<MachineState> nextStates = new ArrayList<MachineState>();
+        List<MachineState> nextStates = new ArrayList<>();
         for (List<Move> move : getLegalJointMoves(state)) {
             nextStates.add(getNextState(state, move));
         }
@@ -220,12 +212,12 @@ public abstract class StateMachine
      */
     public Map<Move, List<MachineState>> getNextStates(MachineState state, Role role) throws MoveDefinitionException, TransitionDefinitionException
     {
-        Map<Move, List<MachineState>> nextStates = new HashMap<Move, List<MachineState>>();
+        Map<Move, List<MachineState>> nextStates = new HashMap<>();
         Map<Role, Integer> roleIndices = getRoleIndices();
         for (List<Move> moves : getLegalJointMoves(state)) {
             Move move = moves.get(roleIndices.get(role));
             if (!nextStates.containsKey(move)) {
-                nextStates.put(move, new ArrayList<MachineState>());
+                nextStates.put(move, new ArrayList<>());
             }
             nextStates.get(move).add(getNextState(state, moves));
         }
@@ -236,7 +228,7 @@ public abstract class StateMachine
     protected void crossProductLegalMoves(List<List<Move>> legals, List<List<Move>> crossProduct, LinkedList<Move> partial)
     {
         if (partial.size() == legals.size()) {
-            crossProduct.add(new ArrayList<Move>(partial));
+            crossProduct.add(new ArrayList<>(partial));
         } else {
             for (Move move : legals.get(partial.size())) {
                 partial.addLast(move);
@@ -278,7 +270,7 @@ public abstract class StateMachine
      * description or the StateMachine implementation.
      */
     public List<Integer> getGoals(MachineState state) throws GoalDefinitionException {
-        List<Integer> theGoals = new ArrayList<Integer>();
+        List<Integer> theGoals = new ArrayList<>();
         for (Role r : getRoles()) {
             theGoals.add(getGoal(state, r));
         }
@@ -291,7 +283,7 @@ public abstract class StateMachine
      */
     public List<Move> getRandomJointMove(MachineState state) throws MoveDefinitionException
     {
-        List<Move> random = new ArrayList<Move>();
+        List<Move> random = new ArrayList<>();
         for (Role role : getRoles()) {
             random.add(getRandomMove(state, role));
         }
@@ -305,7 +297,7 @@ public abstract class StateMachine
      */
     public List<Move> getRandomJointMove(MachineState state, Role role, Move move) throws MoveDefinitionException
     {
-        List<Move> random = new ArrayList<Move>();
+        List<Move> random = new ArrayList<>();
         for (Role r : getRoles()) {
             if (r.equals(role)) {
                 random.add(move);
