@@ -2,17 +2,12 @@ package Search
 import Model.MoveCandidate
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.MachineState
-import java.util.concurrent.Callable
 
-class IDDFS(stateMachineGamer: StateMachineGamer, timeout: Long): Callable<MoveCandidate> {
-    val stateMachineGamer = stateMachineGamer
-    val timeout = timeout
+class IDDFS(stateMachineGamer: StateMachineGamer, timeout: Long) : BaseSearch(stateMachineGamer, timeout) {
     var statesVisited = hashMapOf<Int, Int>()
 
     override fun call(): MoveCandidate? {
         var searchStarted = System.currentTimeMillis()
-
-        val finishBy: Long = timeout - 300
         var moves = stateMachineGamer.stateMachine.getLegalMoves(stateMachineGamer.currentState, stateMachineGamer.role)
 
         var bestMove = moves[0]
@@ -25,7 +20,7 @@ class IDDFS(stateMachineGamer: StateMachineGamer, timeout: Long): Callable<MoveC
 
             for (move in moves) {
                 var machineState = stateMachineGamer.stateMachine.getNextState(stateMachineGamer.currentState, listOf(move))
-                var score = recursiveDepthLimited(machineState, depth, finishBy)
+                var score = recursiveDepthLimited(machineState, depth)
 
                 if (score > bestScore) {
                     bestScore = score
@@ -45,7 +40,7 @@ class IDDFS(stateMachineGamer: StateMachineGamer, timeout: Long): Callable<MoveC
         return MoveCandidate(bestMove, bestScore)
     }
 
-    fun recursiveDepthLimited(node: MachineState, depth: Int, finishBy:Long): Int  {
+    fun recursiveDepthLimited(node: MachineState, depth: Int): Int  {
         if (statesVisited[node.hashCode()] == 1) {
             return 0
         }
@@ -65,7 +60,7 @@ class IDDFS(stateMachineGamer: StateMachineGamer, timeout: Long): Callable<MoveC
             var bestScore: Int = 0
             for (move in stateMachineGamer.stateMachine.getLegalMoves(node, stateMachineGamer.role)) {
                 var machineState = stateMachineGamer.stateMachine.getNextState(node, listOf(move))
-                var score = recursiveDepthLimited(machineState, depth - 1, finishBy)
+                var score = recursiveDepthLimited(machineState, depth - 1)
 
                 if (score > bestScore) {
                     bestScore = score

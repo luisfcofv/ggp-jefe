@@ -1,22 +1,46 @@
 package Manager
 
+import Model.MoveCandidate
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.Move
-import org.ggp.base.util.statemachine.Role
+import java.util.*
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
 
-class GamerManager(roles: List<Role>) {
-    var gamer: Gamer? = null
+open class GamerManager {
 
-    init {
-        if (roles.count() == 1) {
-            gamer = SingleGamerManager()
-        } else {
-            gamer = MultiplayerGamerManager()
-        }
+    open fun searchList(stateMachineGamer: StateMachineGamer, timeout: Long, executor: ExecutorService):ArrayList<Future<MoveCandidate>> {
+        throw UnsupportedOperationException()
     }
 
-    fun solve(stateMachineGamer: StateMachineGamer, timeout: Long): Move {
-        val moveCandidate = gamer!!.solve(stateMachineGamer, timeout)
-        return moveCandidate!!.move
+    fun solve(stateMachineGamer: StateMachineGamer, timeout: Long): MoveCandidate {
+        var executor = Executors.newFixedThreadPool(10)
+        var list = searchList(stateMachineGamer, timeout, executor)
+
+        var movesList = ArrayList<MoveCandidate>()
+        for (future in list) {
+            try {
+                var moveCandidate = future.get()
+                movesList.add(moveCandidate)
+            } catch (exception: InterruptedException) {
+                exception.printStackTrace()
+            } catch (exception: ExecutionException) {
+                exception.printStackTrace()
+            }
+        }
+
+        var score = 0
+        var bestMove: Move? = null
+        for (moveCandidates in movesList) {
+            if (moveCandidates.score >= score) {
+                score = moveCandidates.score
+                bestMove = moveCandidates.move
+            }
+        }
+
+        executor.shutdown()
+        return MoveCandidate(bestMove!!, score)
     }
 }

@@ -1,11 +1,11 @@
 
-import Manager.GamerManager
+import Manager.Gamer
 import org.ggp.base.player.gamer.statemachine.sample.SampleGamer
 import org.ggp.base.util.statemachine.Move
 
 class JefeGamer : SampleGamer() {
     var started: Long = 0
-    var gameManager: GamerManager? = null
+    var gamer: Gamer? = null
 
     override fun getName(): String? {
         return "Jefe"
@@ -14,7 +14,7 @@ class JefeGamer : SampleGamer() {
     override fun stateMachineMetaGame(timeout: Long) {
         super.stateMachineMetaGame(timeout)
         started = System.currentTimeMillis()
-        gameManager = GamerManager(stateMachine.roles)
+        gamer = Gamer(stateMachine.roles)
     }
 
     override fun stateMachineStop() {
@@ -23,6 +23,6 @@ class JefeGamer : SampleGamer() {
     }
 
     override fun stateMachineSelectMove(timeout: Long): Move? {
-        return gameManager!!.solve(this, timeout)
+        return gamer!!.solve(this, timeout)
     }
 }
