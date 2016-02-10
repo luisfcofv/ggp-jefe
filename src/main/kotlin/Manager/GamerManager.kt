@@ -9,15 +9,17 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
-open class GamerManager {
+open class GamerManager(stateMachineGamer: StateMachineGamer, startClockTimeout: Long) {
+    val startClockTimeout = startClockTimeout
+    var stateMachineGamer = stateMachineGamer
 
-    open fun searchList(stateMachineGamer: StateMachineGamer, timeout: Long, executor: ExecutorService):ArrayList<Future<MoveCandidate>> {
+    open fun searchList(timeout: Long, executor: ExecutorService):ArrayList<Future<MoveCandidate>> {
         throw UnsupportedOperationException()
     }
 
-    fun solve(stateMachineGamer: StateMachineGamer, timeout: Long): MoveCandidate {
+    fun solve(timeout: Long): MoveCandidate {
         var executor = Executors.newFixedThreadPool(10)
-        var list = searchList(stateMachineGamer, timeout, executor)
+        var list = searchList(timeout, executor)
 
         var movesList = ArrayList<MoveCandidate>()
         for (future in list) {

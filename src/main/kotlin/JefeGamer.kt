@@ -14,7 +14,7 @@ class JefeGamer : SampleGamer() {
     override fun stateMachineMetaGame(timeout: Long) {
         super.stateMachineMetaGame(timeout)
         started = System.currentTimeMillis()
-        gamer = Gamer(stateMachine.roles)
+        gamer = Gamer(this, timeout)
     }
 
     override fun stateMachineStop() {
@@ -23,6 +23,6 @@ class JefeGamer : SampleGamer() {
     }
 
     override fun stateMachineSelectMove(timeout: Long): Move? {
-        return gamer!!.solve(this, timeout)
+        return gamer!!.solve(timeout)
     }
 }

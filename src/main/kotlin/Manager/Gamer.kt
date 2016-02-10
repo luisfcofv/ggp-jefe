@@ -3,23 +3,20 @@ package Manager
 
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.Move
-import org.ggp.base.util.statemachine.Role
 
-class Gamer(roles: List<Role>) {
+class Gamer(stateMachineGamer: StateMachineGamer, startClockTimeout: Long) {
     var gamerManager: GamerManager? = null
 
     init {
-        if (roles.count() == 1) {
-            gamerManager = SingleGamerManager()
+        if (stateMachineGamer.stateMachine.roles.count() == 1) {
+            gamerManager = SingleGamerManager(stateMachineGamer, startClockTimeout)
         } else {
-            var multiplayerGamerManager = MultiplayerGamerManager()
-            multiplayerGamerManager.roles = roles
-            gamerManager = multiplayerGamerManager
+            gamerManager = MultiplayerGamerManager(stateMachineGamer, startClockTimeout)
         }
     }
 
-    fun solve(stateMachineGamer: StateMachineGamer, timeout: Long): Move {
-        val moveCandidate = gamerManager!!.solve(stateMachineGamer, timeout)
+    fun solve(timeout: Long): Move {
+        val moveCandidate = gamerManager!!.solve(timeout)
         return moveCandidate.move
     }
 }
