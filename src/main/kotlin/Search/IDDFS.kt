@@ -3,7 +3,8 @@ import Model.MoveCandidate
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.MachineState
 
-class IDDFS(stateMachineGamer: StateMachineGamer, timeout: Long) : BaseSearch(stateMachineGamer, timeout) {
+class IDDFS(stateMachineGamer: StateMachineGamer, timeout: Long) : BaseSearch(stateMachineGamer) {
+    val finishBy = timeout - 300
     var statesVisited = hashMapOf<Int, Int>()
 
     override fun call(): MoveCandidate? {

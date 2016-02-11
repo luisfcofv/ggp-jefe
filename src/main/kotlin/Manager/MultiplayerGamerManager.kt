@@ -8,11 +8,13 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Future
 
 class MultiplayerGamerManager(stateMachineGamer: StateMachineGamer, startClockTimeout: Long) : GamerManager(stateMachineGamer, startClockTimeout) {
+    var minimax = Minimax(stateMachineGamer, startClockTimeout)
 
     override fun searchList(timeout: Long, executor: ExecutorService): ArrayList<Future<MoveCandidate>> {
         var list = ArrayList<Future<MoveCandidate>>()
 
-        list.add(executor.submit(Minimax(stateMachineGamer, timeout, stateMachineGamer.stateMachine.roles)))
+        minimax.finishBy = timeout - 300
+        list.add(executor.submit(minimax))
 
         return list
     }
