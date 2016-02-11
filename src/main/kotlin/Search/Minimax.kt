@@ -18,7 +18,7 @@ class Minimax(stateMachineGamer: StateMachineGamer) : BaseSearch(stateMachineGam
         var depth = 0
         var bestMove = moves[0]
 
-        while (System.currentTimeMillis() <= finishBy) {
+        loop@ while (System.currentTimeMillis() <= finishBy) {
             for (move in moves) {
                 var result = minscore(stateMachineGamer.currentState, move, depth, 0, 100)
 
@@ -27,7 +27,7 @@ class Minimax(stateMachineGamer: StateMachineGamer) : BaseSearch(stateMachineGam
                     bestMove = move
 
                     if (result == 100) {
-                        break
+                        break@loop
                     }
                 }
             }
