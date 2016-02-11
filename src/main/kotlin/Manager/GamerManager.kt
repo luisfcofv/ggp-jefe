@@ -9,8 +9,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
-open class GamerManager(stateMachineGamer: StateMachineGamer, startClockTimeout: Long) {
-    val startClockTimeout = startClockTimeout
+open class GamerManager(stateMachineGamer: StateMachineGamer) {
     var stateMachineGamer = stateMachineGamer
 
     open fun searchList(timeout: Long, executor: ExecutorService):ArrayList<Future<MoveCandidate>> {

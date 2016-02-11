@@ -7,8 +7,8 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Future
 
-class MultiplayerGamerManager(stateMachineGamer: StateMachineGamer, startClockTimeout: Long) : GamerManager(stateMachineGamer, startClockTimeout) {
-    var minimax = Minimax(stateMachineGamer, startClockTimeout)
+class MultiplayerGamerManager(stateMachineGamer: StateMachineGamer) : GamerManager(stateMachineGamer) {
+    var minimax = Minimax(stateMachineGamer)
 
     override fun searchList(timeout: Long, executor: ExecutorService): ArrayList<Future<MoveCandidate>> {
         var list = ArrayList<Future<MoveCandidate>>()

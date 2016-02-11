@@ -13,9 +13,7 @@ class JefeGamer : SampleGamer() {
 
     override fun stateMachineMetaGame(timeout: Long) {
         started = System.currentTimeMillis()
-        gamer = Gamer(this, timeout)
-        println("Preprocessing ${(System.currentTimeMillis() - started) / 1000.0} s.")
-        started = System.currentTimeMillis()
+        gamer = Gamer(this)
     }
 
     override fun stateMachineStop() {

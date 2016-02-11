@@ -6,7 +6,7 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Future
 
-class SingleGamerManager(stateMachineGamer: StateMachineGamer, startClockTimeout: Long) : GamerManager(stateMachineGamer, startClockTimeout) {
+class SingleGamerManager(stateMachineGamer: StateMachineGamer) : GamerManager(stateMachineGamer) {
 
     override fun searchList(timeout: Long, executor: ExecutorService):ArrayList<Future<MoveCandidate>> {
         var list = ArrayList<Future<MoveCandidate>>()
