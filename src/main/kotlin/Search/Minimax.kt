@@ -2,6 +2,7 @@ package Search
 
 import Model.MinimaxEntry
 import Model.MoveCandidate
+import Model.Type
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.MachineState
 import org.ggp.base.util.statemachine.Move
@@ -15,12 +16,12 @@ class Minimax(stateMachineGamer: StateMachineGamer) : BaseSearch(stateMachineGam
         var searchStarted = System.currentTimeMillis()
         var moves = stateMachineGamer.stateMachine.getLegalMoves(stateMachineGamer.currentState, stateMachineGamer.role)
         var score = 0
-        var depth = 0
         var bestMove = moves[0]
 
+        var depth = 0
         loop@while (System.currentTimeMillis() <= finishBy) {
-            depth++
             maxDepthReached = true
+            depth++
 
             for (move in moves) {
                 var result = minscore(stateMachineGamer.currentState, move, depth, 0, 100)
@@ -45,25 +46,6 @@ class Minimax(stateMachineGamer: StateMachineGamer) : BaseSearch(stateMachineGam
     }
 
     fun maxscore(currentMachineState: MachineState, depth: Int, alpha: Int, beta: Int): Int {
-        var newAlpha = alpha
-        var newBeta = beta
-
-//        var entry = transpositionTable[currentMachineState.hashCode()]
-//        if (entry != null && entry.depth!! >= depth) {
-//            if (entry.flag == Type.EXACT) {
-//                return entry.value!!
-//            } else if (entry.flag == Type.LOWERBOUND) {
-//                newAlpha = Math.max(newAlpha, entry.value!!)
-//            } else if (entry.flag == Type.UPPERBOUND) {
-//                newBeta = Math.min(newBeta, entry.value!!)
-//            }
-//
-//            if (newAlpha >= newBeta) {
-//                return entry.value!!
-//            }
-//        }
-
-
         if (stateMachineGamer.stateMachine.isTerminal(currentMachineState)) {
             return stateMachineGamer.stateMachine.getGoal(currentMachineState, stateMachineGamer.role)
         } else if (depth == 0 || System.currentTimeMillis() > finishBy) {
@@ -71,32 +53,49 @@ class Minimax(stateMachineGamer: StateMachineGamer) : BaseSearch(stateMachineGam
             return 1
         }
 
-//        var score = 0
-        for (move in stateMachineGamer.stateMachine.getLegalMoves(currentMachineState, stateMachineGamer.role)) {
-            var result = minscore(currentMachineState, move, depth - 1, newAlpha, newBeta)
-//            score = Math.max(score, result)
-            newAlpha = Math.max(newAlpha,result)
+        var newAlpha = alpha
+        var newBeta = beta
+
+        var entry = transpositionTable[currentMachineState.hashCode()]
+        if (entry != null && entry.depth!! >= depth) {
+            if (entry.flag == Type.EXACT) {
+                return entry.value!!
+            } else if (entry.flag == Type.LOWERBOUND) {
+                newAlpha = Math.max(newAlpha, entry.value!!)
+            } else if (entry.flag == Type.UPPERBOUND) {
+                newBeta = Math.min(newBeta, entry.value!!)
+            }
 
             if (newAlpha >= newBeta) {
-                return newBeta
+                return entry.value!!
             }
         }
 
+        var score = 0
+        for (move in stateMachineGamer.stateMachine.getLegalMoves(currentMachineState, stateMachineGamer.role)) {
+            var result = minscore(currentMachineState, move, depth, newAlpha, newBeta)
+            score = Math.max(score, result)
+            newAlpha = Math.max(newAlpha, result)
 
-//        var newEntry = MinimaxEntry()
-//        newEntry.value = score
-//        newEntry.depth = depth
-//
-//        if (score <= newAlpha) {
-//            newEntry.flag = Type.UPPERBOUND
-//        } else if (score >= newBeta) {
-//            newEntry.flag = Type.LOWERBOUND
-//        } else {
-//            newEntry.flag = Type.EXACT
-//        }
-//
-//        transpositionTable[currentMachineState.hashCode()] = newEntry
-        return newAlpha
+            if (newAlpha >= newBeta) {
+                break
+            }
+        }
+
+        var newEntry = MinimaxEntry()
+        newEntry.value = score
+        newEntry.depth = depth
+
+        if (score <= alpha) {
+            newEntry.flag = Type.UPPERBOUND
+        } else if (score >= newBeta) {
+            newEntry.flag = Type.LOWERBOUND
+        } else {
+            newEntry.flag = Type.EXACT
+        }
+
+        transpositionTable[currentMachineState.hashCode()] = newEntry
+        return score
     }
 
     fun minscore(currentMachineState: MachineState, action: Move, depth: Int, alpha: Int, beta: Int): Int {
@@ -104,7 +103,7 @@ class Minimax(stateMachineGamer: StateMachineGamer) : BaseSearch(stateMachineGam
 
         for (opponentMove in stateMachineGamer.stateMachine.getLegalJointMoves(currentMachineState, stateMachineGamer.role, action)) {
             var newMachineState = stateMachineGamer.stateMachine.getNextState(currentMachineState, opponentMove)
-            var result = maxscore(newMachineState, depth, alpha, newBeta)
+            var result = maxscore(newMachineState, depth - 1, alpha, newBeta)
             newBeta = Math.min(newBeta, result)
 
             if (newBeta <= alpha) {
