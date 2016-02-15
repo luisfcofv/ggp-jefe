@@ -6,6 +6,7 @@ import Model.Type
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.MachineState
 import org.ggp.base.util.statemachine.Move
+import java.util.*
 
 class Minimax(stateMachineGamer: StateMachineGamer) : BaseSearch(stateMachineGamer) {
     var finishBy: Long = 0
@@ -14,11 +15,14 @@ class Minimax(stateMachineGamer: StateMachineGamer) : BaseSearch(stateMachineGam
 
     override fun call(): MoveCandidate? {
         var searchStarted = System.currentTimeMillis()
-        var moves = stateMachineGamer.stateMachine.getLegalMoves(stateMachineGamer.currentState, stateMachineGamer.role)
-        var score = 0
-        var bestMove = moves[0]
 
+        var moves = stateMachineGamer.stateMachine.getLegalMoves(stateMachineGamer.currentState, stateMachineGamer.role)
+        var rand = Random();
+        var bestMove = moves[rand.nextInt(moves.size)]
+
+        var score = 0
         var depth = 0
+
         loop@while (System.currentTimeMillis() <= finishBy) {
             maxDepthReached = true
             depth++
