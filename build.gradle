@@ -7,7 +7,7 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 buildscript {
-    ext.kotlin_version = '1.0.0-rc-1036'
+    ext.kotlin_version = '1.0.0'
     repositories {
         mavenCentral()
     }
@@ -87,20 +87,10 @@ task simpleGameSim(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
-task tiltyardRequestFarm(type: JavaExec) {
-    main = 'org.ggp.base.apps.tiltyard.TiltyardRequestFarm'
-    classpath = sourceSets.main.runtimeClasspath
-}
-
 task player(type: JavaExec) {
     main = 'org.ggp.base.apps.player.Player'
     classpath = sourceSets.main.runtimeClasspath
     jvmArgs = playerJvmArgs
-}
-
-task propNetAnnotater(type: JavaExec) {
-    main = 'org.ggp.base.util.propnet.factory.annotater.PropNetAnnotater'
-    classpath = sourceSets.main.runtimeClasspath
 }
 
 //See gameServerRunner.sh
