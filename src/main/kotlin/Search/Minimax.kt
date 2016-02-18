@@ -1,6 +1,6 @@
 package Search
 
-import Heuristic.MobilityHeuristic
+import Heuristic.InverseMobilityHeuristic
 import Model.MinimaxEntry
 import Model.MoveCandidate
 import Model.Type
@@ -55,7 +55,7 @@ class Minimax(stateMachineGamer: StateMachineGamer) : BaseSearch(stateMachineGam
             return stateMachineGamer.stateMachine.getGoal(currentMachineState, stateMachineGamer.role)
         } else if (depth == 0 || System.currentTimeMillis() > finishBy) {
             maxDepthReached = false
-            return MobilityHeuristic().evaluate(stateMachineGamer, arrayListOf(currentMachineState))
+            return InverseMobilityHeuristic().evaluate(stateMachineGamer, arrayListOf(currentMachineState))
         }
 
         var newAlpha = alpha

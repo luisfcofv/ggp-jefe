@@ -1,5 +1,5 @@
 package Search
-import Heuristic.MobilityHeuristic
+import Heuristic.InverseMobilityHeuristic
 import Model.MoveCandidate
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.MachineState
@@ -53,7 +53,7 @@ class IDDFS(stateMachineGamer: StateMachineGamer, timeout: Long) : BaseSearch(st
             return stateMachineGamer.stateMachine.getGoal(node, stateMachineGamer.role)
         } else if (depth == 0) {
             // A non-terminal state is better than a 0 score terminal state
-            return MobilityHeuristic().evaluate(stateMachineGamer, arrayListOf(node))
+            return InverseMobilityHeuristic().evaluate(stateMachineGamer, arrayListOf(node))
         } else if (depth > 0) {
             if (System.currentTimeMillis() > finishBy) {
                 return 1
