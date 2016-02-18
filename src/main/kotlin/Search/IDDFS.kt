@@ -1,5 +1,5 @@
 package Search
-import Heuristic.NoveltyHeuristic
+import Heuristic.MobilityHeuristic
 import Model.MoveCandidate
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.MachineState
@@ -22,7 +22,7 @@ class IDDFS(stateMachineGamer: StateMachineGamer, timeout: Long) : BaseSearch(st
 
             for (move in moves) {
                 var machineState = stateMachineGamer.stateMachine.getNextState(stateMachineGamer.currentState, listOf(move))
-                var score = recursiveDepthLimited(machineState, stateMachineGamer.currentState, depth)
+                var score = recursiveDepthLimited(machineState, depth)
 
                 if (score > bestScore) {
                     bestScore = score
@@ -42,7 +42,7 @@ class IDDFS(stateMachineGamer: StateMachineGamer, timeout: Long) : BaseSearch(st
         return MoveCandidate(bestMove, bestScore)
     }
 
-    fun recursiveDepthLimited(node: MachineState, parentNode: MachineState,depth: Int): Int  {
+    fun recursiveDepthLimited(node: MachineState,depth: Int): Int  {
         if (statesVisited[node.hashCode()] == 1) {
             return 0
         }
@@ -53,7 +53,7 @@ class IDDFS(stateMachineGamer: StateMachineGamer, timeout: Long) : BaseSearch(st
             return stateMachineGamer.stateMachine.getGoal(node, stateMachineGamer.role)
         } else if (depth == 0) {
             // A non-terminal state is better than a 0 score terminal state
-            return NoveltyHeuristic().evaluate(stateMachineGamer, arrayListOf(parentNode, node))
+            return MobilityHeuristic().evaluate(stateMachineGamer, arrayListOf(node))
         } else if (depth > 0) {
             if (System.currentTimeMillis() > finishBy) {
                 return 1
@@ -62,7 +62,7 @@ class IDDFS(stateMachineGamer: StateMachineGamer, timeout: Long) : BaseSearch(st
             var bestScore: Int = 0
             for (move in stateMachineGamer.stateMachine.getLegalMoves(node, stateMachineGamer.role)) {
                 var machineState = stateMachineGamer.stateMachine.getNextState(node, listOf(move))
-                var score = recursiveDepthLimited(machineState, node, depth - 1)
+                var score = recursiveDepthLimited(machineState, depth - 1)
 
                 if (score > bestScore) {
                     bestScore = score

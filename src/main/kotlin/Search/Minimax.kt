@@ -1,6 +1,6 @@
 package Search
 
-import Heuristic.NoveltyHeuristic
+import Heuristic.MobilityHeuristic
 import Model.MinimaxEntry
 import Model.MoveCandidate
 import Model.Type
@@ -50,12 +50,12 @@ class Minimax(stateMachineGamer: StateMachineGamer) : BaseSearch(stateMachineGam
         return MoveCandidate(bestMove, score)
     }
 
-    fun maxscore(currentMachineState: MachineState, parentMachineState: MachineState, depth: Int, alpha: Int, beta: Int): Int {
+    fun maxscore(currentMachineState: MachineState, depth: Int, alpha: Int, beta: Int): Int {
         if (stateMachineGamer.stateMachine.isTerminal(currentMachineState)) {
             return stateMachineGamer.stateMachine.getGoal(currentMachineState, stateMachineGamer.role)
         } else if (depth == 0 || System.currentTimeMillis() > finishBy) {
             maxDepthReached = false
-            return NoveltyHeuristic().evaluate(stateMachineGamer, arrayListOf(parentMachineState, currentMachineState))
+            return MobilityHeuristic().evaluate(stateMachineGamer, arrayListOf(currentMachineState))
         }
 
         var newAlpha = alpha
@@ -108,7 +108,7 @@ class Minimax(stateMachineGamer: StateMachineGamer) : BaseSearch(stateMachineGam
 
         for (opponentMove in stateMachineGamer.stateMachine.getLegalJointMoves(currentMachineState, stateMachineGamer.role, action)) {
             var newMachineState = stateMachineGamer.stateMachine.getNextState(currentMachineState, opponentMove)
-            var result = maxscore(newMachineState, currentMachineState, depth - 1, alpha, newBeta)
+            var result = maxscore(newMachineState, depth - 1, alpha, newBeta)
             newBeta = Math.min(newBeta, result)
 
             if (newBeta <= alpha) {
