@@ -13,6 +13,7 @@ class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(st
     var map = hashMapOf<Int, MonteCarloNode>()
 
     override fun call(): MoveCandidate? {
+        map.clear()
         var searchStarted = System.currentTimeMillis()
         var moves = stateMachineGamer.stateMachine.getLegalMoves(stateMachineGamer.currentState, stateMachineGamer.role)
         var selection = moves[0]
@@ -32,16 +33,19 @@ class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(st
         }
 
         var bestChildNode: MonteCarloNode? = null;
+
+
         for (node in startNode!!.children) {
-            print(node.utility)
             if (bestChildNode == null || node.utility > bestChildNode.utility) {
                 bestChildNode = node;
             }
         }
 
+        println("Child: ${bestChildNode!!.parentMove}")
         println("Search took ${(System.currentTimeMillis() - searchStarted) / 1000.0} s.")
 
-        selection = bestChildNode!!.parentMove
+        selection = bestChildNode.parentMove
+        println("selection: $selection")
         return MoveCandidate(selection, bestChildNode.utility)
     }
 
@@ -57,7 +61,7 @@ class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(st
         }
 
         var score = 0
-        var selectedNode: MonteCarloNode? = null
+        var selectedNode = node
 
         for (children in node.children) {
             var result = selectFunction(children)
