@@ -48,24 +48,24 @@ class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(st
             return node
         }
 
-        for (children in node.children) {
-            if (children.visits == 0) {
-                return children
+        for (child in node.children) {
+            if (child.visits == 0) {
+                return child
             }
         }
 
         var score = Integer.MIN_VALUE
         var selectedNode: MonteCarloNode? = null
 
-        for (children in node.children) {
-            var result = selectFunction(children)
+        for (child in node.children) {
+            var result = selectFunction(child)
             if (result > score) {
                 score = result
-                selectedNode = children
+                selectedNode = child
             }
         }
 
-        if (selectedNode == null) {
+        if (selectedNode == null || selectedNode.state.hashCode() == node.state.hashCode()) {
             return node
         } else {
             return select(selectedNode)
