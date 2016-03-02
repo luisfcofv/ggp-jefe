@@ -76,7 +76,7 @@ public final class Player extends JPanel {
         typeComboBox.setSelectedItem("Random");
 
         JPanel managerPanel = new JPanel(new GridBagLayout());
-        managerPanel.setBorder(new TitledBorder("Manager"));
+        managerPanel.setBorder(new TitledBorder("gamermanager"));
 
         managerPanel.add(new JLabel("Port:"), new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(20, 5, 5, 5), 5, 5));
         managerPanel.add(portTextField, new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(20, 5, 5, 5), 5, 5));

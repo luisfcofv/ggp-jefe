@@ -1,4 +1,4 @@
-package Model
+package model
 
 enum class Type {
     EXACT, LOWERBOUND, UPPERBOUND

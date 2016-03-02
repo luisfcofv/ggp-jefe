@@ -1,4 +1,4 @@
-package Heuristic
+package heuristic
 
 import JefeGamer
 import com.google.common.collect.Sets

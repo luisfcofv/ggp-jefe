@@ -1,6 +1,6 @@
-package Search
+package search
 
-import Model.MoveCandidate
+import model.MoveCandidate
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import java.util.concurrent.Callable
 

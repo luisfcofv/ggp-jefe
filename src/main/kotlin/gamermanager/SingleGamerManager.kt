@@ -1,6 +1,6 @@
-package Manager
-import Model.MoveCandidate
-import Search.IDDFS
+package gamermanager
+import model.MoveCandidate
+import search.IDDFS
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import java.util.*
 import java.util.concurrent.ExecutorService

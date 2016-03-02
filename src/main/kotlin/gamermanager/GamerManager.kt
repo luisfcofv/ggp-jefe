@@ -1,6 +1,6 @@
-package Manager
+package gamermanager
 
-import Model.MoveCandidate
+import model.MoveCandidate
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.Move
 import java.util.*

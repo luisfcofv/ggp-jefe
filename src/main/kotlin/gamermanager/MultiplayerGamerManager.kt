@@ -1,8 +1,8 @@
-package Manager
+package gamermanager
 
-import Model.MoveCandidate
-import Search.Minimax
+import model.MoveCandidate
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
+import search.Minimax
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Future

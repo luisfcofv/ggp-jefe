@@ -1,6 +1,6 @@
-package Search
-import Heuristic.GoalDistanceHeuristic
-import Model.MoveCandidate
+package search
+import heuristic.GoalDistanceHeuristic
+import model.MoveCandidate
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.MachineState
 

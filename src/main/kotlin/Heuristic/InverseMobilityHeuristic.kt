@@ -1,4 +1,4 @@
-package Heuristic
+package heuristic
 
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.MachineState

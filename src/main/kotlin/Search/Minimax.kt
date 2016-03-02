@@ -1,9 +1,9 @@
-package Search
+package search
 
-import Heuristic.InverseMobilityHeuristic
-import Model.MinimaxEntry
-import Model.MoveCandidate
-import Model.Type
+import heuristic.InverseMobilityHeuristic
+import model.MinimaxEntry
+import model.MoveCandidate
+import model.Type
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.MachineState
 import org.ggp.base.util.statemachine.Move

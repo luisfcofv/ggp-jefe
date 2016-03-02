@@ -1,10 +1,13 @@
-package Manager
+package gamer
 
 
+import gamermanager.GamerManager
+import gamermanager.MultiplayerGamerManager
+import gamermanager.SingleGamerManager
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.Move
 
-class Gamer(stateMachineGamer: StateMachineGamer) {
+open class Gamer(stateMachineGamer: StateMachineGamer) {
     var gamerManager: GamerManager? = null
 
     init {

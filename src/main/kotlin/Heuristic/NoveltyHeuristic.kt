@@ -1,4 +1,4 @@
-package Heuristic
+package heuristic
 
 import com.google.common.collect.Sets
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer

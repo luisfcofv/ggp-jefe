@@ -1,4 +1,4 @@
-package Model
+package model
 
 import org.ggp.base.util.statemachine.Move
 
