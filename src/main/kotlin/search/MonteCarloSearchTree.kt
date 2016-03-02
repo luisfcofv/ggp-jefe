@@ -55,7 +55,7 @@ class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(st
         }
 
         var score = Integer.MIN_VALUE
-        var selectedNode = node
+        var selectedNode: MonteCarloNode? = null
 
         for (children in node.children) {
             var result = selectFunction(children)
@@ -65,7 +65,11 @@ class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(st
             }
         }
 
-        return select(selectedNode!!)
+        if (selectedNode == null) {
+            return node
+        } else {
+            return select(selectedNode)
+        }
     }
 
     fun selectFunction(node: MonteCarloNode): Int {
