@@ -60,7 +60,7 @@ class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(st
             }
         }
 
-        var score = 0
+        var score = Integer.MIN_VALUE
         var selectedNode = node
 
         for (children in node.children) {
