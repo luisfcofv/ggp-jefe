@@ -16,30 +16,25 @@ class MonteCarloSearch(stateMachineGamer: StateMachineGamer) : BaseSearch(stateM
             val moveTotalPoints = IntArray(moves.size)
             val moveTotalAttempts = IntArray(moves.size)
 
-            // Perform depth charges for each candidate move, and keep track
-            // of the total score and total attempts accumulated for each move.
-
-            var i = 0
+            var moveIndex = 0
             while (System.currentTimeMillis() < finishBy) {
-                val theScore = performDepthChargeFromMove(stateMachineGamer.currentState, moves[i])
-                moveTotalPoints[i] += theScore
-                moveTotalAttempts[i] += 1
-                i = (i + 1) % moves.size
+                val theScore = performDepthChargeFromMove(stateMachineGamer.currentState, moves[moveIndex])
+                moveTotalPoints[moveIndex] += theScore
+                moveTotalAttempts[moveIndex] += 1
+                moveIndex = (moveIndex + 1) % moves.size
             }
 
-            // Compute the expected score for each move.
             val moveExpectedPoints = DoubleArray(moves.size)
-            for (i in moves.indices) {
-                moveExpectedPoints[i] = moveTotalPoints[i].toDouble() / moveTotalAttempts[i]
+            for (index in moves.indices) {
+                moveExpectedPoints[index] = moveTotalPoints[index].toDouble() / moveTotalAttempts[index]
             }
 
-            // Find the move with the best expected score.
             var bestMove = 0
             bestMoveScore = moveExpectedPoints[0]
-            for (i in 1..moves.size - 1) {
-                if (moveExpectedPoints[i] > bestMoveScore) {
-                    bestMoveScore = moveExpectedPoints[i]
-                    bestMove = i
+            for (move in 1..moves.size - 1) {
+                if (moveExpectedPoints[move] > bestMoveScore) {
+                    bestMoveScore = moveExpectedPoints[move]
+                    bestMove = move
                 }
             }
             selection = moves[bestMove]
