@@ -3,9 +3,6 @@ package search
 import model.MonteCarloNode
 import model.MoveCandidate
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
-import org.ggp.base.util.statemachine.MachineState
-import org.ggp.base.util.statemachine.Move
-import java.util.*
 
 class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(stateMachineGamer) {
     var finishBy: Long = 0
@@ -31,16 +28,14 @@ class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(st
         }
 
         var bestChildNode: MonteCarloNode? = null;
-
-
-        for (node in startNode!!.children) {
-            if (bestChildNode == null || node.utility > bestChildNode.utility) {
-                bestChildNode = node;
+        for (child in startNode!!.children) {
+            if (bestChildNode == null || child.utility > bestChildNode.utility) {
+                bestChildNode = child;
             }
         }
 
         println("Search took ${(System.currentTimeMillis() - searchStarted) / 1000.0} s.")
-        return MoveCandidate( bestChildNode?.parentMove!!, bestChildNode?.utility!!)
+        return MoveCandidate(bestChildNode?.parentMove!!, 0)
     }
 
     fun select(node: MonteCarloNode): MonteCarloNode {
@@ -76,14 +71,19 @@ class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(st
         var vi = node.utility
         var np = node.visits
         var ni = node.parent?.visits as Int
+
         var value = vi + C * Math.sqrt(Math.log(np.toDouble()) / ni)
+        println("Here: $ni -> $value")
         return value.toInt()
     }
 
     fun expand(node: MonteCarloNode) {
         var nodeState = node.state;
+        if (stateMachineGamer.stateMachine.isTerminal(nodeState)) {
+            return
+        }
 
-        for (move in stateMachineGamer.stateMachine.getLegalMoves(stateMachineGamer.currentState, stateMachineGamer.role)) {
+        for (move in stateMachineGamer.stateMachine.getLegalMoves(nodeState, stateMachineGamer.role)) {
             for (jointMoves in stateMachineGamer.stateMachine.getLegalJointMoves(nodeState, stateMachineGamer.role, move)) {
                 var childState = stateMachineGamer.stateMachine.getNextState(nodeState, jointMoves);
                 var newNode = node.createChildNode(childState, move)
@@ -93,24 +93,12 @@ class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(st
     }
 
     fun playout(node: MonteCarloNode): Int {
-        return depthCharge(node.state)
-    }
-
-    fun depthCharge(machineState: MachineState): Int {
-        if (stateMachineGamer.stateMachine.isTerminal(machineState)) {
-            return stateMachineGamer.stateMachine.getGoal(machineState, stateMachineGamer.role)
+        try {
+            val finalState = stateMachineGamer.stateMachine.performDepthCharge(node.state, null)
+            return stateMachineGamer.stateMachine.getGoal(finalState, stateMachineGamer.role)
+        } catch (e: Exception) {
+            return 0
         }
-
-        var randomMoves = arrayListOf<Move>()
-        for (role in stateMachineGamer.stateMachine.roles) {
-            var moves = stateMachineGamer.stateMachine.getLegalMoves(machineState, role);
-            var rand = Random();
-            var randomMove = moves[rand.nextInt(moves.size)];
-            randomMoves.add(randomMove)
-        }
-
-        var nextState = stateMachineGamer.stateMachine.getNextState(machineState, randomMoves);
-        return depthCharge(nextState)
     }
 
     fun backPropogate(node: MonteCarloNode, score: Int) {
