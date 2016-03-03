@@ -11,7 +11,7 @@ class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(st
     var map = hashMapOf<Int, MonteCarloNode>()
 
     override fun call(): Move? {
-        map.clear()
+//        map.clear()
         var searchStarted = System.currentTimeMillis()
 
         var startNode: MonteCarloNode?
@@ -81,7 +81,6 @@ class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(st
         var ni = node.parent?.visits as Int
 
         var value = vi + C * Math.sqrt(Math.log(np.toDouble()) / ni)
-        println("Here: $ni -> $value")
         return value.toInt()
     }
 

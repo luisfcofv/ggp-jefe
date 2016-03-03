@@ -42,11 +42,10 @@ class MonteCarloSearch(stateMachineGamer: StateMachineGamer) : BaseSearch(stateM
         return selection
     }
 
-    private val depth = IntArray(1)
-    internal fun performDepthChargeFromMove(machineState: MachineState, move: Move): Int {
+    fun performDepthChargeFromMove(machineState: MachineState, move: Move): Int {
         val stateMachine = stateMachineGamer.stateMachine
         try {
-            val finalState = stateMachine.performDepthCharge(stateMachine.getRandomNextState(machineState, stateMachineGamer.role, move), depth)
+            val finalState = stateMachine.performDepthCharge(stateMachine.getRandomNextState(machineState, stateMachineGamer.role, move), null)
             return stateMachine.getGoal(finalState, stateMachineGamer.role)
         } catch (e: Exception) {
             e.printStackTrace()
