@@ -2,7 +2,6 @@ package search
 
 import heuristic.InverseMobilityHeuristic
 import model.MinimaxEntry
-import model.MoveCandidate
 import model.Type
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.MachineState
@@ -14,7 +13,7 @@ class Minimax(stateMachineGamer: StateMachineGamer) : BaseSearch(stateMachineGam
     var maxDepthReached: Boolean = true
     var transpositionTable = hashMapOf<Int, MinimaxEntry>()
 
-    override fun call(): MoveCandidate? {
+    override fun call(): Move? {
         var searchStarted = System.currentTimeMillis()
 
         var moves = stateMachineGamer.stateMachine.getLegalMoves(stateMachineGamer.currentState, stateMachineGamer.role)
@@ -47,7 +46,7 @@ class Minimax(stateMachineGamer: StateMachineGamer) : BaseSearch(stateMachineGam
         }
 
         println("Search took ${(System.currentTimeMillis() - searchStarted) / 1000.0} s.")
-        return MoveCandidate(bestMove, score)
+        return bestMove
     }
 
     fun maxscore(currentMachineState: MachineState, depth: Int, alpha: Int, beta: Int): Int {

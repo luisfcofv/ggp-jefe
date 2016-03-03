@@ -1,6 +1,5 @@
 package search
 
-import model.MoveCandidate
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.MachineState
 import org.ggp.base.util.statemachine.Move
@@ -8,10 +7,10 @@ import org.ggp.base.util.statemachine.Move
 class MonteCarloSearch(stateMachineGamer: StateMachineGamer) : BaseSearch(stateMachineGamer) {
     var finishBy: Long = 0
 
-    override fun call(): MoveCandidate? {
+    override fun call(): Move? {
         var moves = stateMachineGamer.stateMachine.getLegalMoves(stateMachineGamer.currentState, stateMachineGamer.role)
         var selection = moves[0]
-        var bestMoveScore: Double = 0.0
+
         if (moves.size > 1) {
             val moveTotalPoints = IntArray(moves.size)
             val moveTotalAttempts = IntArray(moves.size)
@@ -30,7 +29,7 @@ class MonteCarloSearch(stateMachineGamer: StateMachineGamer) : BaseSearch(stateM
             }
 
             var bestMove = 0
-            bestMoveScore = moveExpectedPoints[0]
+            var bestMoveScore = moveExpectedPoints[0]
             for (move in 1..moves.size - 1) {
                 if (moveExpectedPoints[move] > bestMoveScore) {
                     bestMoveScore = moveExpectedPoints[move]
@@ -40,7 +39,7 @@ class MonteCarloSearch(stateMachineGamer: StateMachineGamer) : BaseSearch(stateM
             selection = moves[bestMove]
         }
 
-        return MoveCandidate(selection, bestMoveScore.toInt())
+        return selection
     }
 
     private val depth = IntArray(1)

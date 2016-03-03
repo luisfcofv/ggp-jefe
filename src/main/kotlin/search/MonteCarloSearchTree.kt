@@ -1,15 +1,16 @@
 package search
 
 import model.MonteCarloNode
-import model.MoveCandidate
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
+import org.ggp.base.util.statemachine.Move
+import java.util.*
 
 class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(stateMachineGamer) {
     var finishBy: Long = 0
     val C = 40
     var map = hashMapOf<Int, MonteCarloNode>()
 
-    override fun call(): MoveCandidate? {
+    override fun call(): Move? {
         map.clear()
         var searchStarted = System.currentTimeMillis()
 
@@ -34,8 +35,15 @@ class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(st
             }
         }
 
+        var bestMove = bestChildNode?.parentMove
+        if (bestMove == null) {
+            val moves = stateMachineGamer.stateMachine.getLegalMoves(stateMachineGamer.currentState, stateMachineGamer.role)
+            var rand = Random();
+            bestMove = moves[rand.nextInt(moves.size)]
+        }
+
         println("Search took ${(System.currentTimeMillis() - searchStarted) / 1000.0} s.")
-        return MoveCandidate(bestChildNode?.parentMove!!, 0)
+        return bestMove
     }
 
     fun select(node: MonteCarloNode): MonteCarloNode {

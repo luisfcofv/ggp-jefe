@@ -1,6 +1,5 @@
 package gamermanager
 
-import model.MoveCandidate
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.Move
 import java.util.*
@@ -12,15 +11,15 @@ import java.util.concurrent.Future
 open class GamerManager(stateMachineGamer: StateMachineGamer) {
     var stateMachineGamer = stateMachineGamer
 
-    open fun searchList(timeout: Long, executor: ExecutorService):ArrayList<Future<MoveCandidate>> {
+    open fun searchList(timeout: Long, executor: ExecutorService):ArrayList<Future<Move>> {
         throw UnsupportedOperationException()
     }
 
-    fun solve(timeout: Long): MoveCandidate {
+    fun solve(timeout: Long): Move {
         var executor = Executors.newFixedThreadPool(10)
         var list = searchList(timeout, executor)
 
-        var movesList = ArrayList<MoveCandidate>()
+        var movesList = ArrayList<Move>()
         for (future in list) {
             try {
                 var moveCandidate = future.get()
@@ -32,16 +31,7 @@ open class GamerManager(stateMachineGamer: StateMachineGamer) {
             }
         }
 
-        var score = 0
-        var bestMove: Move? = null
-        for (moveCandidates in movesList) {
-            if (moveCandidates.score >= score) {
-                score = moveCandidates.score
-                bestMove = moveCandidates.move
-            }
-        }
-
         executor.shutdown()
-        return MoveCandidate(bestMove!!, score)
+        return movesList[0]
     }
 }

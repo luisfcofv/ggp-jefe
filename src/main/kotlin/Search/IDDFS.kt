@@ -1,14 +1,14 @@
 package search
 import heuristic.GoalDistanceHeuristic
-import model.MoveCandidate
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.MachineState
+import org.ggp.base.util.statemachine.Move
 
 class IDDFS(stateMachineGamer: StateMachineGamer, timeout: Long) : BaseSearch(stateMachineGamer) {
     val finishBy = timeout - 1000
     var statesVisited = hashMapOf<Int, Int>()
 
-    override fun call(): MoveCandidate? {
+    override fun call(): Move? {
         var searchStarted = System.currentTimeMillis()
         var moves = stateMachineGamer.stateMachine.getLegalMoves(stateMachineGamer.currentState, stateMachineGamer.role)
 
@@ -30,7 +30,7 @@ class IDDFS(stateMachineGamer: StateMachineGamer, timeout: Long) : BaseSearch(st
 
                     if (bestScore == 100) {
                         println("Search took ${(System.currentTimeMillis() - searchStarted) / 1000.0} s.")
-                        return MoveCandidate(bestMove, bestScore)
+                        return bestMove
                     }
                 }
             }
@@ -39,7 +39,7 @@ class IDDFS(stateMachineGamer: StateMachineGamer, timeout: Long) : BaseSearch(st
         }
 
         println("Search took ${(System.currentTimeMillis() - searchStarted) / 1000.0} s.")
-        return MoveCandidate(bestMove, bestScore)
+        return bestMove
     }
 
     fun recursiveDepthLimited(node: MachineState,depth: Int): Int  {

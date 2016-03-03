@@ -19,7 +19,6 @@ open class Gamer(stateMachineGamer: StateMachineGamer) {
     }
 
     fun solve(timeout: Long): Move {
-        val moveCandidate = gamerManager!!.solve(timeout)
-        return moveCandidate.move
+        return gamerManager!!.solve(timeout)
     }
 }
