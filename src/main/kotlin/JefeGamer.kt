@@ -1,12 +1,16 @@
 
 
 import gamer.Gamer
-import gamer.MonteCarloGamer
-import org.ggp.base.player.gamer.statemachine.sample.SampleGamer
+import org.ggp.base.apps.player.detail.DetailPanel
+import org.ggp.base.apps.player.detail.SimpleDetailPanel
+import org.ggp.base.player.gamer.statemachine.StateMachineGamer
+import org.ggp.base.util.game.Game
 import org.ggp.base.util.match.Match
 import org.ggp.base.util.statemachine.Move
+import org.ggp.base.util.statemachine.StateMachine
+import propnet.PropnetStateMachine
 
-class JefeGamer : SampleGamer() {
+class JefeGamer : StateMachineGamer() {
     companion object {
         @JvmField
         var MATCH: Match? = null
@@ -15,14 +19,31 @@ class JefeGamer : SampleGamer() {
     var started: Long = 0
     var jefeGamer: Gamer? = null
 
+    override fun preview(g: Game?, timeout: Long) {
+        // Nothing
+    }
+
     override fun getName(): String? {
         return "Jefe"
+    }
+
+    override fun getInitialStateMachine(): StateMachine? {
+        return PropnetStateMachine()
+//        return CachedStateMachine(ProverStateMachine())
+    }
+
+    override fun getDetailPanel(): DetailPanel {
+        return SimpleDetailPanel()
+    }
+
+    override fun stateMachineAbort() {
+        println("stateMachineAbort")
     }
 
     override fun stateMachineMetaGame(timeout: Long) {
         JefeGamer.MATCH = match
         started = System.currentTimeMillis()
-        jefeGamer = MonteCarloGamer(this)
+        jefeGamer = Gamer(this)
     }
 
     override fun stateMachineStop() {

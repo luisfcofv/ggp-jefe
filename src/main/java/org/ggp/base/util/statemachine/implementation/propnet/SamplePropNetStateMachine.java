@@ -1,16 +1,6 @@
 package org.ggp.base.util.statemachine.implementation.propnet;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.ggp.base.util.gdl.grammar.Gdl;
-import org.ggp.base.util.gdl.grammar.GdlConstant;
-import org.ggp.base.util.gdl.grammar.GdlRelation;
-import org.ggp.base.util.gdl.grammar.GdlSentence;
+import org.ggp.base.util.gdl.grammar.*;
 import org.ggp.base.util.propnet.architecture.Component;
 import org.ggp.base.util.propnet.architecture.PropNet;
 import org.ggp.base.util.propnet.architecture.components.Proposition;
@@ -23,6 +13,8 @@ import org.ggp.base.util.statemachine.exceptions.GoalDefinitionException;
 import org.ggp.base.util.statemachine.exceptions.MoveDefinitionException;
 import org.ggp.base.util.statemachine.exceptions.TransitionDefinitionException;
 import org.ggp.base.util.statemachine.implementation.prover.query.ProverQueryBuilder;
+
+import java.util.*;
 
 
 @SuppressWarnings("unused")
@@ -164,6 +156,7 @@ public class SamplePropNetStateMachine extends StateMachine {
             int index = roleIndices.get(roles.get(i));
             doeses.add(ProverQueryBuilder.toDoes(roles.get(i), moves.get(index)));
         }
+
         return doeses;
     }
 

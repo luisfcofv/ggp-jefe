@@ -2,7 +2,7 @@ package gamer
 
 
 import gamermanager.GamerManager
-import gamermanager.MultiplayerGamerManager
+import gamermanager.MonteCarloGamerManager
 import gamermanager.SingleGamerManager
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer
 import org.ggp.base.util.statemachine.Move
@@ -14,7 +14,7 @@ open class Gamer(stateMachineGamer: StateMachineGamer) {
         if (stateMachineGamer.stateMachine.roles.count() == 1) {
             gamerManager = SingleGamerManager(stateMachineGamer)
         } else {
-            gamerManager = MultiplayerGamerManager(stateMachineGamer)
+            gamerManager = MonteCarloGamerManager(stateMachineGamer)
         }
     }
 

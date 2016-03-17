@@ -1,28 +1,15 @@
 package org.ggp.base.util.gdl.factory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.ggp.base.util.gdl.factory.exceptions.GdlFormatException;
-import org.ggp.base.util.gdl.grammar.Gdl;
-import org.ggp.base.util.gdl.grammar.GdlConstant;
-import org.ggp.base.util.gdl.grammar.GdlDistinct;
-import org.ggp.base.util.gdl.grammar.GdlFunction;
-import org.ggp.base.util.gdl.grammar.GdlLiteral;
-import org.ggp.base.util.gdl.grammar.GdlNot;
-import org.ggp.base.util.gdl.grammar.GdlOr;
-import org.ggp.base.util.gdl.grammar.GdlPool;
-import org.ggp.base.util.gdl.grammar.GdlProposition;
-import org.ggp.base.util.gdl.grammar.GdlRelation;
-import org.ggp.base.util.gdl.grammar.GdlRule;
-import org.ggp.base.util.gdl.grammar.GdlSentence;
-import org.ggp.base.util.gdl.grammar.GdlTerm;
-import org.ggp.base.util.gdl.grammar.GdlVariable;
+import org.ggp.base.util.gdl.grammar.*;
 import org.ggp.base.util.symbol.factory.SymbolFactory;
 import org.ggp.base.util.symbol.factory.exceptions.SymbolFormatException;
 import org.ggp.base.util.symbol.grammar.Symbol;
 import org.ggp.base.util.symbol.grammar.SymbolAtom;
 import org.ggp.base.util.symbol.grammar.SymbolList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public final class GdlFactory
@@ -62,7 +49,7 @@ public final class GdlFactory
     {
         GdlConstant name = createConstant((SymbolAtom) list.get(0));
 
-        List<GdlTerm> body = new ArrayList<GdlTerm>();
+        List<GdlTerm> body = new ArrayList<>();
         for (int i = 1; i < list.size(); i++)
         {
             body.add(createTerm(list.get(i)));
@@ -118,7 +105,7 @@ public final class GdlFactory
 
     private static GdlOr createOr(SymbolList list)
     {
-        List<GdlLiteral> disjuncts = new ArrayList<GdlLiteral>();
+        List<GdlLiteral> disjuncts = new ArrayList<>();
         for (int i = 1; i < list.size(); i++)
         {
             disjuncts.add(createLiteral(list.get(i)));
@@ -136,7 +123,7 @@ public final class GdlFactory
     {
         GdlConstant name = createConstant((SymbolAtom) list.get(0));
 
-        List<GdlTerm> body = new ArrayList<GdlTerm>();
+        List<GdlTerm> body = new ArrayList<>();
         for (int i = 1; i < list.size(); i++)
         {
             body.add(createTerm(list.get(i)));
@@ -149,7 +136,7 @@ public final class GdlFactory
     {
         GdlSentence head = createSentence(list.get(1));
 
-        List<GdlLiteral> body = new ArrayList<GdlLiteral>();
+        List<GdlLiteral> body = new ArrayList<>();
         for (int i = 2; i < list.size(); i++)
         {
             body.add(createLiteral(list.get(i)));

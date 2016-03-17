@@ -1,10 +1,10 @@
 package org.ggp.base.util.statemachine;
 
-import java.io.Serializable;
-
 import org.ggp.base.util.gdl.factory.GdlFactory;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.symbol.factory.exceptions.SymbolFormatException;
+
+import java.io.Serializable;
 
 /**
  * A Move represents a possible move that can be made by a role. Each
