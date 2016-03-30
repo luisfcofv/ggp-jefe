@@ -1,5 +1,7 @@
 
 
+import `is`.ru.cadia.ggp.propnet.BackwardPropNetStateMachine
+import `is`.ru.cadia.ggp.propnet.structure.GGPBasePropNetStructureFactory
 import gamer.Gamer
 import org.ggp.base.apps.player.detail.DetailPanel
 import org.ggp.base.apps.player.detail.SimpleDetailPanel
@@ -28,8 +30,13 @@ class JefeGamer : StateMachineGamer() {
     }
 
     override fun getInitialStateMachine(): StateMachine? {
-        return PropnetStateMachine()
-//        return CachedStateMachine(ProverStateMachine())
+        val stateMachine = BackwardPropNetStateMachine(GGPBasePropNetStructureFactory())
+
+        if (stateMachine is StateMachine) {
+            return stateMachine
+        }
+
+        return null
     }
 
     override fun getDetailPanel(): DetailPanel {

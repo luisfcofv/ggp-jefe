@@ -11,14 +11,13 @@ class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(st
     var map = hashMapOf<Int, MonteCarloNode>()
 
     override fun call(): Move? {
-//        map.clear()
         var searchStarted = System.currentTimeMillis()
 
         var startNode: MonteCarloNode?
         if (map[stateMachineGamer.currentState.hashCode()] != null) {
             startNode = map[stateMachineGamer.currentState.hashCode()]
         } else {
-            startNode = MonteCarloNode(stateMachineGamer.currentState);
+            startNode = MonteCarloNode(stateMachineGamer.currentState)
         }
 
         while (System.currentTimeMillis() < finishBy) {
@@ -31,15 +30,14 @@ class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(st
         var bestChildNode: MonteCarloNode? = null;
         for (child in startNode!!.children) {
             if (bestChildNode == null || child.utility > bestChildNode.utility) {
-                bestChildNode = child;
+                bestChildNode = child
             }
         }
 
         var bestMove = bestChildNode?.parentMove
         if (bestMove == null) {
             val moves = stateMachineGamer.stateMachine.getLegalMoves(stateMachineGamer.currentState, stateMachineGamer.role)
-            var rand = Random();
-            bestMove = moves[rand.nextInt(moves.size)]
+            bestMove = moves[Random().nextInt(moves.size)]
         }
 
         println("Search took ${(System.currentTimeMillis() - searchStarted) / 1000.0} s.")

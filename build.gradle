@@ -7,17 +7,13 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 buildscript {
-    ext.kotlin_version = '1.0.0'
+    ext.kotlin_version = '1.0.1-1'
     repositories {
         mavenCentral()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
-}
-
-sourceSets {
-    main.java.srcDirs += 'src/main/kotlin'
 }
 
 repositories {
@@ -36,7 +32,7 @@ dependencies {
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 
     compile files(
-        'lib/Batik/batik-1.7.jar',
+        'lib/Batik/batik-1.7.jar', 'lib/propnet.jar',
     )
 }
 
