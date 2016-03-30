@@ -48,7 +48,7 @@ public class ProverStateMachine extends StateMachine
 
     private MachineState computeInitialState()
     {
-        Set<GdlSentence> results = prover.askAll(ProverQueryBuilder.getInitQuery(), new HashSet<GdlSentence>());
+        Set<GdlSentence> results = prover.askAll(ProverQueryBuilder.getInitQuery(), new HashSet<>());
         return new ProverResultParser().toState(results);
     }
 

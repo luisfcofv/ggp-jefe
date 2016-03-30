@@ -11,8 +11,6 @@ class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(st
     var map = hashMapOf<Int, MonteCarloNode>()
 
     override fun call(): Move? {
-        var searchStarted = System.currentTimeMillis()
-
         var startNode: MonteCarloNode?
         if (map[stateMachineGamer.currentState.hashCode()] != null) {
             startNode = map[stateMachineGamer.currentState.hashCode()]
@@ -40,7 +38,6 @@ class MonteCarloSearchTree(stateMachineGamer: StateMachineGamer) : BaseSearch(st
             bestMove = moves[Random().nextInt(moves.size)]
         }
 
-        println("Search took ${(System.currentTimeMillis() - searchStarted) / 1000.0} s.")
         return bestMove
     }
 
